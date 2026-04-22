@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="main">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Iran–US War Status – Impact on Global Supply Chains</title>
+<style>
+  /* =========================================================
+     Design tokens (from company-design-system SKILL.md)
+     Switch theme: <html data-theme="main|dark|agentic-ai|odyssey">
+     ========================================================= */
+
+  :root {
+    /* Typography scale – 1.25 modular */
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+    --fs-h1: 3.052rem;   --lh-h1: 1.1;   --fw-h1: 700;
+    --fs-h2: 2.441rem;   --lh-h2: 1.15;  --fw-h2: 700;
+    --fs-h3: 1.953rem;   --lh-h3: 1.2;   --fw-h3: 600;
+    --fs-h4: 1.563rem;   --lh-h4: 1.3;   --fw-h4: 600;
+    --fs-h5: 1.25rem;    --lh-h5: 1.4;   --fw-h5: 600;
+    --fs-h6: 1rem;       --lh-h6: 1.5;   --fw-h6: 600;
+    --fs-body-lg: 1.125rem;  --lh-body-lg: 1.6;
+    --fs-body-md: 1rem;      --lh-body-md: 1.6;
+    --fs-body-sm: 0.875rem;  --lh-body-sm: 1.5;
+    --fs-body-xs: 0.75rem;   --lh-body-xs: 1.4;
+    --fs-caption: 0.6875rem; --lh-caption: 1.3;
+
+    /* Spacing – 4 px base */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 24px;
+    --space-2xl: 32px;
+    --space-3xl: 48px;
+    --space-4xl: 64px;
+    --space-5xl: 96px;
+    --space-6xl: 128px;
+
+    /* Radius */
+    --radius-none: 0;
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+  }
+
+  /* ---------- Theme: Main (default) ---------- */
+  [data-theme="main"] {
+    --primary:        #2F6FEB;
+    --primary-hover:  #1E58C9;
+    --secondary:      #6B7AE5;
+    --accent:         #F4B740;
+    --success:        #1FAE6E;
+    --warning:        #E8A33D;
+    --danger:         #E14B4B;
+    --bg:             #FFFFFF;
+    --surface:        #F7F8FA;
+    --border:         #E3E6EC;
+    --text:           #0F1729;
+    --text-muted:     #5A6478;
+
+    --page-bg: #F1F6FE;
+  }
+
+  /* ---------- Theme: Dark ---------- */
+  [data-theme="dark"] {
+    --primary:        #5B8DEF;
+    --primary-hover:  #79A2F5;
+    --secondary:      #8E97F0;
+    --accent:         #F7C669;
+    --success:        #3CD391;
+    --warning:        #F0B454;
+    --danger:         #F26B6B;
+    --bg:             #0B1020;
+    --surface:        #141A2E;
+    --border:         #243049;
+    --text:           #F2F4F8;
+    --text-muted:     #9AA3B7;
+
+    --page-bg:
+      radial-gradient(circle at 20% 0%, rgba(124, 92, 255, 0.18), transparent 55%),
+      radial-gradient(circle at 80% 100%, rgba(25, 211, 218, 0.14), transparent 60%),
+      linear-gradient(160deg, #0A0B1E 0%, #141A2E 100%);
+  }
+
+  /* ---------- Theme: Agentic AI ---------- */
+  [data-theme="agentic-ai"] {
+    --primary:        #7C5CFF;
+    --primary-hover:  #6346E8;
+    --secondary:      #19D3DA;
+    --accent:         #FF5BB1;
+    --success:        #3DDC97;
+    --warning:        #FFB547;
+    --danger:         #FF5C6C;
+    --bg:             #0A0B1E;
+    --surface:        #15172E;
+    --border:         #2A2D52;
+    --text:           #EDEAFF;
+    --text-muted:     #9C9DCB;
+
+    --page-bg:
+      radial-gradient(circle at 20% 0%, rgba(124, 92, 255, 0.18), transparent 55%),
+      radial-gradient(circle at 80% 100%, rgba(25, 211, 218, 0.14), transparent 60%),
+      linear-gradient(160deg, #0A0B1E 0%, #141A2E 100%);
+  }
+
+  /* ---------- Theme: Odyssey ---------- */
+  [data-theme="odyssey"] {
+    --primary:        #E8633A;
+    --primary-hover:  #C84E27;
+    --secondary:      #9B5DE5;
+    --accent:         #FFD66B;
+    --success:        #4FB286;
+    --warning:        #F2A65A;
+    --danger:         #D7423F;
+    --bg:             #10002A;
+    --surface:        #19024C;
+    --border:         #3716A0;
+    --text:           #FFF1E0;
+    --text-muted:     #C8A8B8;
+
+    --page-bg: #10002A;
+  }
+
+  /* =========================================================
+     Base
+     ========================================================= */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-md);
+    line-height: var(--lh-body-md);
+    color: var(--text);
+    background: var(--page-bg);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); font-weight: var(--fw-h1); margin: 0; letter-spacing: -0.02em; }
+  h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: var(--fw-h2); margin: 0; letter-spacing: -0.015em; }
+  h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); font-weight: var(--fw-h3); margin: 0; letter-spacing: -0.01em; }
+  h4 { font-size: var(--fs-h4); line-height: var(--lh-h4); font-weight: var(--fw-h4); margin: 0; }
+  h5 { font-size: var(--fs-h5); line-height: var(--lh-h5); font-weight: var(--fw-h5); margin: 0; }
+  h6 { font-size: var(--fs-h6); line-height: var(--lh-h6); font-weight: var(--fw-h6); margin: 0; }
+
+  p { margin: 0; }
+
+  /* =========================================================
+     Layout
+     ========================================================= */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl);
+  }
+
+  /* ---------- Theme switcher ---------- */
+  .theme-switcher {
+    position: sticky;
+    top: var(--space-lg);
+    z-index: 50;
+    margin-bottom: var(--space-2xl);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: var(--space-xs);
+    width: fit-content;
+    margin-left: auto;
+    backdrop-filter: blur(8px);
+  }
+  .theme-switcher button {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-xs);
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-full);
+    padding: var(--space-sm) var(--space-lg);
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+  }
+  .theme-switcher button:hover { color: var(--text); }
+  .theme-switcher button.active {
+    background: var(--primary);
+    color: #FFFFFF;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-4xl) var(--space-3xl);
+    margin-bottom: var(--space-2xl);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-xl);
+  }
+  .hero-eyebrow::before {
+    content: "";
+    width: 8px; height: 8px;
+    background: var(--danger);
+    border-radius: var(--radius-full);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .hero h1 {
+    margin-bottom: var(--space-lg);
+    max-width: 900px;
+  }
+  .hero h1 .accent { color: var(--primary); }
+  .hero-subtitle {
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body-lg);
+    color: var(--text-muted);
+    max-width: 720px;
+  }
+
+  /* ---------- Alert banner ---------- */
+  .alert-banner {
+    background: var(--primary);
+    color: #FFFFFF;
+    padding: var(--space-lg) var(--space-xl);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-2xl);
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+  }
+  .alert-banner .dot { color: rgba(255, 255, 255, 0.6); }
+
+  /* ---------- Stats grid ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-2xl);
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+  }
+  .stat-label {
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+  }
+  .stat-value {
+    font-size: var(--fs-h3);
+    line-height: var(--lh-h3);
+    font-weight: var(--fw-h3);
+    color: var(--text);
+    margin-bottom: var(--space-xs);
+  }
+  .stat-value.danger { color: var(--danger); }
+  .stat-value.warning { color: var(--warning); }
+  .stat-sub {
+    font-size: var(--fs-body-sm);
+    color: var(--text-muted);
+  }
+
+  /* ---------- Section ---------- */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-3xl);
+    margin-bottom: var(--space-2xl);
+  }
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+  }
+  .section-title {
+    margin-bottom: var(--space-2xl);
+  }
+  .section-prose {
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body-lg);
+    color: var(--text);
+  }
+  .section-prose strong { color: var(--text); font-weight: 600; }
+
+  /* ---------- Timeline ---------- */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+  }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: var(--space-xl);
+    padding: var(--space-xl) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-date {
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-sm);
+    font-weight: 500;
+    color: var(--primary);
+    letter-spacing: 0.04em;
+  }
+  .timeline-body {
+    font-size: var(--fs-body-md);
+    line-height: var(--lh-body-md);
+    color: var(--text);
+  }
+  .timeline-body strong { font-weight: 600; }
+
+  /* ---------- Port congestion grid ---------- */
+  .port-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-lg);
+  }
+  .port-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+  }
+  .port-name {
+    font-size: var(--fs-h6);
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border);
+  }
+  .port-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: var(--space-sm) 0;
+    font-size: var(--fs-body-sm);
+  }
+  .port-stat-label { color: var(--text-muted); }
+  .port-stat-value {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ---------- Surcharge table ---------- */
+  .surcharge-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-body-sm);
+  }
+  .surcharge-table thead th {
+    text-align: left;
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .surcharge-table tbody td {
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+  }
+  .surcharge-table tbody tr:last-child td { border-bottom: none; }
+  .surcharge-table .carrier { font-weight: 600; }
+  .surcharge-table .carrier-sub {
+    display: block;
+    font-size: var(--fs-body-xs);
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-top: var(--space-xs);
+  }
+  .surcharge-table .price {
+    font-family: var(--font-mono);
+    color: var(--primary);
+  }
+
+  /* ---------- Sector impacts ---------- */
+  .sectors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-lg);
+  }
+  .sector-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+  }
+  .sector-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+  }
+  .sector-body {
+    font-size: var(--fs-body-md);
+    line-height: var(--lh-body-md);
+    color: var(--text);
+  }
+  .sector-body strong { font-weight: 600; }
+
+  /* ---------- Recommendations ---------- */
+  .recommendation {
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-2xl) 0;
+  }
+  .recommendation:first-child { padding-top: 0; }
+  .recommendation:last-child { border-bottom: none; padding-bottom: 0; }
+  .recommendation-headline {
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body-lg);
+    color: var(--text);
+    margin-bottom: var(--space-lg);
+  }
+  .recommendation-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+  }
+  .recommendation ul {
+    margin: 0;
+    padding-left: var(--space-xl);
+    color: var(--text);
+  }
+  .recommendation li {
+    font-size: var(--fs-body-md);
+    line-height: var(--lh-body-md);
+    margin-bottom: var(--space-sm);
+  }
+  .recommendation li::marker { color: var(--primary); }
+
+  /* ---------- Trade lanes ---------- */
+  .lane-list { display: grid; grid-template-columns: 1fr; }
+  .lane {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-xl);
+    padding: var(--space-lg) 0;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .lane:last-child { border-bottom: none; }
+  .lane-route { font-size: var(--fs-body-md); color: var(--text); }
+  .lane-arrow { color: var(--text-muted); margin: 0 var(--space-md); }
+  .lane-code {
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    text-align: center;
+    padding: var(--space-3xl) 0 var(--space-xl);
+    color: var(--text-muted);
+    font-size: var(--fs-body-sm);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    :root { --fs-h1: 2.25rem; --fs-h2: 1.85rem; --fs-h3: 1.5rem; }
+    .page { padding: var(--space-xl) var(--space-lg); }
+    .hero { padding: var(--space-2xl) var(--space-xl); }
+    .section { padding: var(--space-2xl) var(--space-xl); }
+    .timeline-item { grid-template-columns: 1fr; gap: var(--space-sm); }
+    .surcharge-table thead { display: none; }
+    .surcharge-table tbody td { display: block; padding: var(--space-sm) 0; border: none; }
+    .surcharge-table tbody tr { display: block; padding: var(--space-lg) 0; border-bottom: 1px solid var(--border); }
+    .lane { grid-template-columns: 1fr; gap: var(--space-xs); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Theme switcher -->
+  <nav class="theme-switcher" aria-label="Theme switcher">
+    <button data-set-theme="main" class="active">Main</button>
+    <button data-set-theme="dark">Dark</button>
+    <button data-set-theme="agentic-ai">Agentic AI</button>
+    <button data-set-theme="odyssey">Odyssey</button>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-eyebrow">Middle East War Report</div>
+    <h1>Iran–US War Status: <span class="accent">Impact on Global Supply Chains</span></h1>
+    <p class="hero-subtitle">
+      The Strait of Hormuz is effectively closed. Tanker transits have collapsed from 153+ per day to just 3 by March 7, war-risk insurance cancellations are in effect, and major carriers are applying surcharges to cargo already at sea.
+    </p>
+    <div class="alert-banner" role="status">
+      <span>⚠ Hormuz transits down to 3/day by March 7 (from 153+ pre-conflict)</span>
+      <span class="dot">·</span>
+      <span>P&amp;I war-risk cancellations effective March 5</span>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <section class="stats" aria-label="Key indicators">
+    <div class="stat">
+      <div class="stat-label">Hormuz transits</div>
+      <div class="stat-value danger">3/day</div>
+      <div class="stat-sub">Down from 153+ pre-conflict (by March 7)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Per-container surcharges</div>
+      <div class="stat-value warning">$800–$4,000+</div>
+      <div class="stat-sub">Applied to cargo afloat and not yet discharged</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Global oil supply via Hormuz</div>
+      <div class="stat-value">~20%</div>
+      <div class="stat-sub">Plus ~20% of global LNG trade</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Toyota production gap</div>
+      <div class="stat-value">~40,000</div>
+      <div class="stat-sub">Fewer vehicles for Middle East markets, March–April</div>
+    </div>
+  </section>
+
+  <!-- Executive Summary -->
+  <section class="section">
+    <div class="section-eyebrow">Executive Summary</div>
+    <h2 class="section-title">What happened</h2>
+    <p class="section-prose">
+      Following joint US-Israeli strikes on Iran on February 28, the Strait of Hormuz, which normally handles <strong>153+ vessel transits per day</strong>, collapsed to just 13 by March 1st and 3 by March 7th. The Joint Maritime Information Center confirmed just one inbound and one outbound crossing. P&amp;I war-risk cancellations took effect March 5th. Carriers have imposed <strong>$800 to $4,000+ per-container surcharges</strong>, extending these to cargo already afloat and not yet discharged. Energy pricing, automotive production, and cold-chain freight are all showing measurable impact.
+    </p>
+  </section>
+
+  <!-- Situation Timeline -->
+  <section class="section">
+    <div class="section-eyebrow">Situation Timeline</div>
+    <h2 class="section-title">Day-by-day developments</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">Apr 13</div>
+        <div class="timeline-body">The U.S. military said it will blockade all Iranian Gulf ports on Monday (April 13, 2026) at 2 p.m. GMT, effectively seizing control of maritime traffic in the critical Strait of Hormuz.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Apr 08</div>
+        <div class="timeline-body">New tolls could add $1 a barrel to Hormuz oil, crude costs rise ~$1/barrel as $2M/VLCC informal toll gets formalized.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Apr 03</div>
+        <div class="timeline-body">CMA CGM on Friday from announcing May 1 peak season surcharges on shipments from Asia to North America. Those surcharges are $1,800 per 20-foot; $2,000 per 40-foot, and $2,530 per 45-foot containers.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Apr 03</div>
+        <div class="timeline-body">A French-operated container ship became the first vessel of a major liner to exit the Strait of Hormuz since Iran asserted control of the gateway to the Persian Gulf. The 5,500-TEU CMA CGM Kribi crossed the narrow passage Thursday on its way out of the Persian Gulf.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 29</div>
+        <div class="timeline-body">Bahrain imposes curfew on all maritime activities. It is nightly from 1800 to 0400 and includes all vessels.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 28</div>
+        <div class="timeline-body">The Omani Port of Salalah, located on the Arabian Sea, came under attack on Saturday morning, March 28th. Expect shipment delays up to 5 days and rerouting as port operations remain suspended following the drone strike.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 27</div>
+        <div class="timeline-body">Iran launches assault on Kuwait ports. First assault came at dawn on the Shuwaikh Port &amp; a second attack was focused on the Mubarak Al-Kabeer Port in northern Kuwait.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 25</div>
+        <div class="timeline-body">As of March 25, the Strait of Hormuz remains functionally closed to liner container traffic. The port of Salalah is largely being used for refueling and bunkering, with few planned sailings to berth at the port. Carriers are slowly opening import and export bookings via Jeddah, Sohar, Fujairah, and Khor Fakkan. However, capacity can be limited.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 24</div>
+        <div class="timeline-body">Trump claimed that Iran wants to make a deal and the two countries have "major points of agreement". Iran has denied that any discussions with the US have taken place, insisting that its position on the Strait of Hormuz has not changed.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 19</div>
+        <div class="timeline-body">Iran strikes wipe out 17% of Qatar's LNG capacity, repairs could take 3–5 years.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 17</div>
+        <div class="timeline-body">The shutdown of the Strait of Hormuz has led to increased bunker prices, affecting global shipping costs.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 16</div>
+        <div class="timeline-body">LTL services in and out of Bahrain are currently suspended due to the closure of the free zone. FTL services in or out of Bahrain are available.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 16</div>
+        <div class="timeline-body">Containers are being discharged at various Middle East and Indian Subcontinent ports, mainly Sohar and Salalah in Oman, Khor Fakkan in the UAE, Colombo in Sri Lanka, and Mundra in India.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 16</div>
+        <div class="timeline-body">The Strait of Hormuz remains functionally closed to liner container traffic, with only sporadic, non-liner or escorted movements reported; container carriers continue to treat the strait as non-navigable for scheduled services.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 12</div>
+        <div class="timeline-body"><strong>Maersk: 10 Vessels Stranded in Persian Gulf.</strong> As of March 12, Maersk confirmed 10 of its vessels are stranded inside the Persian Gulf, unable to exit through Hormuz. The company has not provided a timeline for resolution and is assessing diversion options on a vessel-by-vessel basis.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 7</div>
+        <div class="timeline-body">Only <strong>3 total crossings</strong> recorded through the strait. GPS jamming affects 1,650+ vessels across the Gulf. IRGC strikes tanker PRIMA and tug MUSAFFAH 2, which later sinks. Iran reconfirms closure to Western-allied shipping on March 8th.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 5</div>
+        <div class="timeline-body">P&amp;I and war-risk cancellations take effect. IRGC clarifies closure applies to US, Israeli and Western-allied vessels. Iran signals China-flagged vessels may be permitted selectively. Cover can still be arranged on a single-voyage basis where authorized.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 2–3</div>
+        <div class="timeline-body">Carriers extend war-risk surcharges to <strong>cargo already on the water not yet discharged</strong>, a significant escalation in financial exposure for shippers.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 1</div>
+        <div class="timeline-body"><strong>Jebel Ali suspended.</strong> A fire breaks out inside the port following debris from an intercepted aerial threat. DP World suspends all operations across Terminals 1 to 4. Despite a nominal resumption announcement at 18:00 GST, AIS data confirms zero container vessel arrivals or departures through March 5. Vessels are diverted to <strong>Khor Fakkan</strong>, Sharjah's enclave port on the Gulf of Oman side, accessible without a Hormuz transit.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 1–2</div>
+        <div class="timeline-body">Traffic collapses. A senior IRGC official officially confirms the strait is closed on March 2. Total transits fall to 13 on March 1 (down from 105 on Feb 28). Major carriers, Maersk, CMA CGM, Hapag-Lloyd, MSC and COSCO, suspend transits and new bookings.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Feb 28</div>
+        <div class="timeline-body">US and Israel launch coordinated strikes on Iran. Iran's IRGC announces retaliatory closure of the Strait of Hormuz. Outbound traffic that evening is heavy; inbound light. Three tankers are struck near the strait.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Port Congestion -->
+  <section class="section">
+    <div class="section-eyebrow">Port Congestion</div>
+    <h2 class="section-title">Current dwell &amp; congestion by port</h2>
+    <div class="port-grid">
+      <div class="port-card">
+        <div class="port-name">Salalah, Oman – OMSLL</div>
+        <div class="port-stat"><span class="port-stat-label">Port Congestion</span><span class="port-stat-value">1 Days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Import Dwell Time</span><span class="port-stat-value">4 days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Export Dwell Time</span><span class="port-stat-value">3 days</span></div>
+      </div>
+      <div class="port-card">
+        <div class="port-name">Sohar, Oman – OMSOH</div>
+        <div class="port-stat"><span class="port-stat-label">Port Congestion</span><span class="port-stat-value">13 Days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Import Dwell Time</span><span class="port-stat-value">9 days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Export Dwell Time</span><span class="port-stat-value">8 days</span></div>
+      </div>
+      <div class="port-card">
+        <div class="port-name">Khor Fakkan</div>
+        <div class="port-stat"><span class="port-stat-label">Port Congestion</span><span class="port-stat-value">2 Days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Import Dwell Time</span><span class="port-stat-value">5 days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Export Dwell Time</span><span class="port-stat-value">2 days</span></div>
+      </div>
+      <div class="port-card">
+        <div class="port-name">Mundra, India – INMUN</div>
+        <div class="port-stat"><span class="port-stat-label">Port Congestion</span><span class="port-stat-value">3 Days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Import Dwell Time</span><span class="port-stat-value">3 days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Export Dwell Time</span><span class="port-stat-value">6 days</span></div>
+      </div>
+      <div class="port-card">
+        <div class="port-name">Colombo, Sri Lanka – LKCMB</div>
+        <div class="port-stat"><span class="port-stat-label">Port Congestion</span><span class="port-stat-value">1 Days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Import Dwell Time</span><span class="port-stat-value">4 days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Export Dwell Time</span><span class="port-stat-value">6 days</span></div>
+      </div>
+      <div class="port-card">
+        <div class="port-name">Shuwaikh Port</div>
+        <div class="port-stat"><span class="port-stat-label">Port Congestion</span><span class="port-stat-value">3 Days</span></div>
+        <div class="port-stat"><span class="port-stat-label">Import Dwell Time</span><span class="port-stat-value">7 days</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Carrier Surcharges -->
+  <section class="section">
+    <div class="section-eyebrow">Carrier Surcharges</div>
+    <h2 class="section-title">Per-container surcharges by carrier</h2>
+    <table class="surcharge-table">
+      <thead>
+        <tr>
+          <th>Carrier</th>
+          <th>Dry</th>
+          <th>Reefer</th>
+          <th>Applicability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="carrier">Hapag-Lloyd</span></td>
+          <td><span class="price">$1,500/TEU</span></td>
+          <td><span class="price">$3,500/ctr</span></td>
+          <td>New + unshipped + on-water not discharged (Mar 2nd+)</td>
+        </tr>
+        <tr>
+          <td><span class="carrier">CMA CGM</span></td>
+          <td><span class="price">$2,000 (20')</span> · <span class="price">$3,000 (40')</span></td>
+          <td><span class="price">$4,000/ctr</span></td>
+          <td>New + unshipped + afloat not discharged (Mar 2nd+)</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="carrier">MSC</span>
+            <span class="carrier-sub">Arabian Peninsula – Africa / Indian Ocean</span>
+          </td>
+          <td><span class="price">$2,000 (20')</span> · <span class="price">$3,000 (40')</span></td>
+          <td><span class="price">$4,000/ctr</span></td>
+          <td>Effective Mar 5th. Also declared end-of-voyage on Gulf-bound cargo.</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="carrier">MSC</span>
+            <span class="carrier-sub">Indian Subcontinent – East Africa / Indian Ocean</span>
+          </td>
+          <td><span class="price">$500/TEU</span></td>
+          <td><span class="price">$1,000/TEU</span></td>
+          <td>Emergency War Surcharge effective Mar 5th.</td>
+        </tr>
+        <tr>
+          <td><span class="carrier">Maersk</span></td>
+          <td colspan="2">Emergency contingency surcharge announced; amounts vary by trade lane.</td>
+          <td>Unshipped + on-water not discharged</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Sector Impacts -->
+  <section class="section">
+    <div class="section-eyebrow">Sector Impacts</div>
+    <h2 class="section-title">Where the disruption is hitting hardest</h2>
+    <div class="sectors">
+      <div class="sector-card">
+        <div class="sector-tag">Energy</div>
+        <p class="sector-body">Hormuz carries approximately <strong>20% of the world's daily oil supply</strong> and <strong>~20% of global LNG trade</strong>. Qatari LNG production was halted March 2nd following Iranian drone strikes on Ras Laffan. Asian spot LNG (JKM) peaked at $25.39/MMBtu on March 3rd, in a three-year high. European natural gas prices spiked up to 70% in the first week of March.</p>
+      </div>
+      <div class="sector-card">
+        <div class="sector-tag">Automotive</div>
+        <p class="sector-body">Toyota Motor is producing <strong>~40,000 fewer vehicles</strong> for Middle East markets across March to April, representing roughly 60 to 70% of its normal monthly export volume there. Models affected include the Land Cruiser, sedans, and commercial vans.</p>
+      </div>
+      <div class="sector-card">
+        <div class="sector-tag">Retail</div>
+        <p class="sector-body">Capacity tightening and transit variability spreading across both ocean and air networks. Air cargo capacity across Gulf corridors has dropped sharply, with airspace closures forcing reroutes. Spot rate pressure mounting across non-Gulf trade lanes as vessels and equipment are removed from circulation.</p>
+      </div>
+      <div class="sector-card">
+        <div class="sector-tag">Food / Pharma</div>
+        <p class="sector-body">Higher reefer surcharges combined with diversion risk are increasing dwell times and cold-chain complexity. Spoilage exposure is elevated. Some food commodities, including sugar and fertiliser, are being selectively permitted through the strait, but passage is inconsistent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What GoComet Incident Lens Suggests -->
+  <section class="section">
+    <div class="section-eyebrow">What GoComet Incident Lens Suggests</div>
+    <h2 class="section-title">Recommended actions</h2>
+    <div class="recommendation">
+      <p class="recommendation-headline">Saudi Red Sea ports are being used as alternative gateways for Gulf cargo as disruptions in the Strait of Hormuz limit direct Gulf vessel movements.</p>
+      <div class="recommendation-label">Recommended Actions</div>
+      <ul>
+        <li>Re-evaluate routing for upcoming bookings to avoid potential delays in Gulf ports directly affected by Hormuz instability.</li>
+        <li>Consider routing Gulf-bound cargo via Saudi Red Sea ports (e.g., Jeddah, Yanbu) to bypass Hormuz disruptions.</li>
+        <li>Check with carriers for services using these Red Sea gateways.</li>
+        <li>Use feeder connections from Saudi ports to move cargo into Gulf markets.</li>
+      </ul>
+    </div>
+    <div class="recommendation">
+      <p class="recommendation-headline">Shippers can leverage free or extended storage up to 10 days (notably from Hapag-Lloyd) to hold Gulf-bound cargo without additional cost.</p>
+      <div class="recommendation-label">Recommended Actions</div>
+      <ul>
+        <li>Check if your shipments are with Hapag-Lloyd and confirm free-time eligibility.</li>
+        <li>Use the free window to delay cargo decisions without incurring storage costs.</li>
+        <li>Re-evaluate routing options (Red Sea / land bridge) while cargo is held.</li>
+        <li>Track expiry of free storage to avoid sudden charges.</li>
+      </ul>
+    </div>
+    <div class="recommendation">
+      <p class="recommendation-headline">Expect alternative routing via land bridges to keep Gulf cargo moving, with slightly longer transit times but improved continuity.</p>
+      <div class="recommendation-label">Recommended Actions</div>
+      <ul>
+        <li>Shift critical Gulf cargo to CMA CGM's land-bridge routes to avoid Hormuz disruption risk.</li>
+        <li>Prioritize time-sensitive shipments on these routes for better reliability vs waiting vessels.</li>
+        <li>Ask carriers for multimodal options (sea + land) to maintain supply continuity.</li>
+        <li>Use this as leverage to negotiate rates or service priority, since carriers are actively offering alternatives.</li>
+      </ul>
+    </div>
+    <div class="recommendation">
+      <p class="recommendation-headline">Cosco has resumed bookings to the Middle East, bypassing the Strait of Hormuz due to ongoing tensions.</p>
+      <div class="recommendation-label">Recommended Actions</div>
+      <ul>
+        <li>Book early with COSCO to secure space before demand and rates increase.</li>
+        <li>Prioritize critical shipments while capacity is temporarily available.</li>
+        <li>Confirm routing and ETAs as services resume but risks remain.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Impacted Trade Lanes -->
+  <section class="section">
+    <div class="section-eyebrow">Impacted Trade Lanes</div>
+    <h2 class="section-title">Routes affected by the disruption</h2>
+    <div class="lane-list">
+      <div class="lane"><div class="lane-route">Mundra, India <span class="lane-arrow">→</span> Sharjah, UAE</div><div class="lane-code">INMUN → AESHJ</div></div>
+      <div class="lane"><div class="lane-route">Tokyo, Japan <span class="lane-arrow">→</span> Jebel Ali, UAE</div><div class="lane-code">JPTYO → AEJEA</div></div>
+      <div class="lane"><div class="lane-route">Fuzhou, China <span class="lane-arrow">→</span> Salalah, Oman</div><div class="lane-code">CNFOC → OMSLL</div></div>
+      <div class="lane"><div class="lane-route">Jebel Ali, UAE <span class="lane-arrow">→</span> Tianjin Xingang, China</div><div class="lane-code">AEJEA → CNTXG</div></div>
+      <div class="lane"><div class="lane-route">JNPT (Nhava Sheva), India <span class="lane-arrow">→</span> Jebel Ali, UAE</div><div class="lane-code">INNSA → AEJEA</div></div>
+      <div class="lane"><div class="lane-route">Kochi, India <span class="lane-arrow">→</span> Jebel Ali, UAE</div><div class="lane-code">INCOK → AEJEA</div></div>
+      <div class="lane"><div class="lane-route">Chittagong, Bangladesh <span class="lane-arrow">→</span> Jebel Ali, UAE</div><div class="lane-code">BDCGP → AEJEA</div></div>
+      <div class="lane"><div class="lane-route">Port Victoria, Seychelles <span class="lane-arrow">→</span> Bangkok, Thailand</div><div class="lane-code">SCPOV → THBKK</div></div>
+      <div class="lane"><div class="lane-route">JNPT (Nhava Sheva), India <span class="lane-arrow">→</span> Port of Aqaba, Jordan</div><div class="lane-code">INNSA → JOAQJ</div></div>
+      <div class="lane"><div class="lane-route">Khalifa Bin Salman, Bahrain <span class="lane-arrow">→</span> Norfolk, USA</div><div class="lane-code">BHKBS → USORF</div></div>
+      <div class="lane"><div class="lane-route">Hai Phong, Vietnam <span class="lane-arrow">→</span> Salalah, Oman</div><div class="lane-code">VNHPH → OMSLL</div></div>
+      <div class="lane"><div class="lane-route">Ambarli Port, Turkey <span class="lane-arrow">→</span> Jebel Ali, UAE</div><div class="lane-code">TRAMR → AEJEA</div></div>
+      <div class="lane"><div class="lane-route">Xiamen, China <span class="lane-arrow">→</span> Jeddah, Saudi Arabia</div><div class="lane-code">CNXMG → SAJED</div></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    Middle East War Report · Impact on Global Supply Chains
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll("[data-set-theme]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const theme = btn.getAttribute("data-set-theme");
+      document.documentElement.setAttribute("data-theme", theme);
+      document.querySelectorAll("[data-set-theme]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+</script>
+</body>
+</html>
