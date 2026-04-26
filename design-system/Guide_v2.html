@@ -1,0 +1,2122 @@
+<!doctype html>
+<html lang="en" data-theme="main">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Style Guide — Company Design System</title>
+    <style>
+      /* =========================================================
+     Design tokens (from company-design-system SKILL.md)
+     Theme switch happens via data-theme attribute on <html>.
+     ========================================================= */
+
+      :root {
+        --font-sans:
+          "Proxima Nova", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+        /* Typography scale (1.25 modular) */
+        --fs-h1: 3.052rem;
+        --lh-h1: 1.1;
+        --fw-h1: 700;
+        --fs-h2: 2.441rem;
+        --lh-h2: 1.15;
+        --fw-h2: 700;
+        --fs-h3: 1.953rem;
+        --lh-h3: 1.2;
+        --fw-h3: 600;
+        --fs-h4: 1.563rem;
+        --lh-h4: 1.3;
+        --fw-h4: 600;
+        --fs-h5: 1.25rem;
+        --lh-h5: 1.4;
+        --fw-h5: 600;
+        --fs-h6: 1rem;
+        --lh-h6: 1.5;
+        --fw-h6: 600;
+        --fs-body-lg: 1.125rem;
+        --lh-body-lg: 1.6;
+        --fs-body-md: 1rem;
+        --lh-body-md: 1.6;
+        --fs-body-sm: 0.875rem;
+        --lh-body-sm: 1.5;
+        --fs-body-xs: 0.75rem;
+        --lh-body-xs: 1.4;
+        --fs-caption: 0.6875rem;
+        --lh-caption: 1.3;
+
+        /* Spacing (4px base) */
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 12px;
+        --space-lg: 16px;
+        --space-xl: 24px;
+        --space-2xl: 32px;
+        --space-3xl: 48px;
+        --space-4xl: 64px;
+        --space-5xl: 96px;
+        --space-6xl: 128px;
+
+        /* Radius */
+        --radius-none: 0;
+        --radius-xs: 2px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-2xl: 24px;
+        --radius-full: 9999px;
+      }
+
+      /* ---------- Theme: Main (default) ---------- */
+      [data-theme="main"] {
+        --primary: #0054ff;
+        --primary-hover: #003e9c;
+        --secondary: #3376ff;
+        --accent: #a033ff;
+        --success: #179e60;
+        --warning: #f68c00;
+        --danger: #eb2e2e;
+        --bg: #ffffff;
+        --surface: #f0f6ff;
+        --border: #dadde3;
+        --text: #0c1c3c;
+        --text-muted: #8e98a8;
+      }
+
+      /* ---------- Theme: Dark ---------- */
+      [data-theme="dark"] {
+        --primary: #0054ff;
+        --primary-hover: #112f6b;
+        --secondary: #3376ff;
+        --accent: #a033ff;
+        --success: #179e60;
+        --warning: #f68c00;
+        --danger: #eb2e2e;
+        --bg: #000000;
+        --surface: #0a0a0a;
+        --border: #262626;
+        --text: #f5f7fa;
+        --text-muted: #8e98a8;
+      }
+
+      /* ---------- Theme: Agentic AI ---------- */
+      [data-theme="agentic-ai"] {
+        --primary: #0054ff;
+        --primary-hover: #003e9c;
+        --secondary: #3376ff;
+        --accent: #a033ff;
+        --success: #179e60;
+        --warning: #f68c00;
+        --danger: #eb2e2e;
+        --bg: #ffffff;
+        --surface: #f0f6ff;
+        --border: #dadde3;
+        --text: #0c1c3c;
+        --text-muted: #4e5971;
+      }
+
+      /* ---------- Theme: Odyssey ---------- */
+      [data-theme="odyssey"] {
+        --primary: #0054ff;
+        --primary-hover: #112f6b;
+        --secondary: #3376ff;
+        --accent: #a033ff;
+        --success: #179e60;
+        --warning: #f68c00;
+        --danger: #eb2e2e;
+        --bg: #000000;
+        --surface: #0a0a0a;
+        --border: #262626;
+        --text: #f9fafb;
+        --text-muted: #dadde3;
+      }
+
+      /* =========================================================
+     Base
+     ========================================================= */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-md);
+        line-height: var(--lh-body-md);
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        transition: background-color 0.3s ease;
+      }
+
+      h1 {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-h1);
+        font-weight: var(--fw-h1);
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
+      h2 {
+        font-size: var(--fs-h2);
+        line-height: var(--lh-h2);
+        font-weight: var(--fw-h2);
+        margin: 0;
+        letter-spacing: -0.015em;
+      }
+      h3 {
+        font-size: var(--fs-h3);
+        line-height: var(--lh-h3);
+        font-weight: var(--fw-h3);
+        margin: 0;
+        letter-spacing: -0.01em;
+      }
+      h4 {
+        font-size: var(--fs-h4);
+        line-height: var(--lh-h4);
+        font-weight: var(--fw-h4);
+        margin: 0;
+      }
+      h5 {
+        font-size: var(--fs-h5);
+        line-height: var(--lh-h5);
+        font-weight: var(--fw-h5);
+        margin: 0;
+      }
+      h6 {
+        font-size: var(--fs-h6);
+        line-height: var(--lh-h6);
+        font-weight: var(--fw-h6);
+        margin: 0;
+      }
+      p {
+        margin: 0;
+      }
+      code {
+        font-family: var(--font-mono);
+        font-size: 0.9em;
+        background: var(--bg);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        color: var(--primary);
+      }
+
+      /* =========================================================
+     Navigation
+     ========================================================= */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: color-mix(in srgb, var(--surface) 92%, transparent);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: var(--space-lg) var(--space-xl);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-xl);
+      }
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        color: var(--text);
+      }
+      .brand-logo {
+        height: 24px;
+        width: auto;
+        display: block;
+      }
+      .brand-logo .logo-dark {
+        fill: currentColor; /* follows nav-brand / footer-brand color */
+      }
+      .brand-logo .logo-blue {
+        fill: var(--primary); /* stays on-brand across all themes */
+      }
+      /* Dark and Odyssey: whole logo (including the blue accent) goes white. */
+      [data-theme="dark"] .brand-logo .logo-blue,
+      [data-theme="odyssey"] .brand-logo .logo-blue {
+        fill: currentColor;
+      }
+      .nav-links {
+        display: flex;
+        gap: var(--space-xl);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: var(--fs-body-sm);
+        font-weight: 500;
+        transition: color 0.18s;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .theme-switcher {
+        display: flex;
+        gap: var(--space-xs);
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        padding: var(--space-xs);
+      }
+      .theme-switcher button {
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-xs);
+        font-weight: 500;
+        color: var(--text-muted);
+        background: transparent;
+        border: none;
+        border-radius: var(--radius-full);
+        padding: var(--space-sm) var(--space-md);
+        cursor: pointer;
+        transition:
+          background 0.18s,
+          color 0.18s;
+        white-space: nowrap;
+      }
+      .theme-switcher button:hover {
+        color: var(--text);
+      }
+      .theme-switcher button.active {
+        background: var(--primary);
+        color: #ffffff;
+      }
+
+      /* =========================================================
+     Layout
+     ========================================================= */
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--space-xl);
+      }
+      @media (max-width: 640px) {
+        .container {
+          padding: 0 var(--space-lg);
+        }
+      }
+
+      .section {
+        padding: var(--space-5xl) 0;
+      }
+
+      /* =========================================================
+     Alternating section backgrounds
+     Body stays flat var(--bg) for every theme; sections own the
+     vertical rhythm. .section-alt is the accent stripe.
+       Main / Dark        → flat var(--surface)
+       Agentic AI         → bg-main-mesh image
+       Odyssey            → bg-odyssey-aurora image
+     ========================================================= */
+      .section,
+      .hero {
+        background: var(--bg);
+      }
+      .section-alt {
+        background: var(--surface);
+      }
+      [data-theme="agentic-ai"] .section-alt {
+        background:
+          url("./assets/main-theme-bg.png") center / cover no-repeat,
+          var(--surface);
+      }
+      [data-theme="odyssey"] .section-alt {
+        background:
+          url("./assets/odyssey-theme-bg.png") center / cover no-repeat,
+          var(--surface);
+      }
+
+      /* Hero exception: in Agentic AI and Odyssey the hero shows the
+         theme's image so the page doesn't open on a flat slab. Main and
+         Dark keep the hero flat (already covered by the rule above). */
+      [data-theme="agentic-ai"] .hero {
+        background:
+          url("./assets/main-theme-bg.png") center / cover no-repeat,
+          var(--surface);
+      }
+      [data-theme="odyssey"] .hero {
+        background:
+          url("./assets/odyssey-theme-bg.png") center / cover no-repeat,
+          var(--surface);
+      }
+
+      /* Cards inside an alt stripe need to flip their fill so they don't
+         blend into the section's surface color. In Main/Dark this means
+         the card uses --bg; in Agentic AI/Odyssey the textured stripe
+         lets us keep --surface but we still flip for consistency. */
+      .section-alt .card,
+      .section-alt .feature-card,
+      .section-alt .stat,
+      .section-alt .swatch,
+      .section-alt .radius-tile,
+      .section-alt .col-image,
+      .section-alt .type-list,
+      .section-alt .spacing-list,
+      .section-alt .slider,
+      .section-alt .gradient-card {
+        background: var(--bg);
+      }
+
+      .section-header {
+        margin-bottom: var(--space-3xl);
+        max-width: 720px;
+      }
+      .section-eyebrow {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--primary);
+        margin-bottom: var(--space-md);
+      }
+      .section-title {
+        margin-bottom: var(--space-lg);
+      }
+      .section-lede {
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body-lg);
+        color: var(--text-muted);
+      }
+
+      /* =========================================================
+     Hero
+     ========================================================= */
+      .hero {
+        padding: var(--space-6xl) 0 var(--space-5xl);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        text-align: center;
+      }
+      .hero > .container {
+        width: 100%;
+      }
+      .hero-eyebrow {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--primary);
+        background: color-mix(in srgb, var(--primary) 12%, transparent);
+        padding: var(--space-sm) var(--space-lg);
+        border-radius: var(--radius-full);
+        margin-bottom: var(--space-xl);
+      }
+      .hero h1 {
+        max-width: 900px;
+        margin: 0 auto var(--space-xl);
+      }
+      .hero h1 .accent {
+        color: var(--primary);
+      }
+      .hero-lede {
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body-lg);
+        color: var(--text-muted);
+        max-width: 640px;
+        margin: 0 auto var(--space-2xl);
+      }
+      .hero-actions {
+        display: flex;
+        gap: var(--space-md);
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* =========================================================
+     Buttons
+     ========================================================= */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-sm);
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-sm);
+        font-weight: 600;
+        padding: var(--space-md) var(--space-xl);
+        border-radius: var(--radius-md);
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.18s;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #ffffff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+      .btn-secondary {
+        background: transparent;
+        color: var(--text);
+        border-color: var(--text);
+      }
+      .btn-secondary:hover {
+        background: var(--surface);
+        border-color: var(--border);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--primary);
+      }
+      .btn-ghost:hover {
+        background: color-mix(in srgb, var(--primary) 10%, transparent);
+      }
+
+      /* =========================================================
+     Section: Typography showcase
+     ========================================================= */
+      .type-list {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2xl);
+        padding: var(--space-2xl);
+      }
+      .type-row {
+        display: grid;
+        grid-template-columns: 100px 1fr 180px;
+        gap: var(--space-xl);
+        align-items: baseline;
+        padding: var(--space-xl) 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .type-row:last-child {
+        border-bottom: none;
+      }
+      .type-token {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-sm);
+        color: var(--primary);
+        font-weight: 500;
+      }
+      .type-meta {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        color: var(--text-muted);
+        text-align: right;
+      }
+
+      /* =========================================================
+     Section: Color palette
+     ========================================================= */
+      .palette-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--space-lg);
+      }
+      .swatch {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+      }
+      .swatch-color {
+        height: 96px;
+        border-bottom: 1px solid var(--border);
+      }
+      .swatch-meta {
+        padding: var(--space-md) var(--space-lg);
+      }
+      .swatch-token {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-sm);
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: var(--space-xs);
+      }
+      .swatch-hex {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        color: var(--text-muted);
+        text-transform: uppercase;
+      }
+
+      /* =========================================================
+     Section: Spacing
+     ========================================================= */
+      .spacing-list {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2xl);
+        padding: var(--space-xl);
+      }
+      .space-row {
+        display: grid;
+        grid-template-columns: 80px 80px 1fr;
+        align-items: center;
+        gap: var(--space-xl);
+        padding: var(--space-md) 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .space-row:last-child {
+        border-bottom: none;
+      }
+      .space-token {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-sm);
+        color: var(--primary);
+        font-weight: 500;
+      }
+      .space-value {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        color: var(--text-muted);
+      }
+      .space-bar {
+        height: 16px;
+        background: var(--primary);
+        border-radius: var(--radius-xs);
+      }
+
+      /* =========================================================
+     Section: Radius
+     ========================================================= */
+      .radius-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--space-lg);
+      }
+      .radius-tile {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-xl);
+        text-align: center;
+      }
+      .radius-demo {
+        width: 80px;
+        height: 80px;
+        background: var(--primary);
+        margin: 0 auto var(--space-lg);
+      }
+      .radius-token {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-sm);
+        color: var(--text);
+        font-weight: 500;
+        margin-bottom: var(--space-xs);
+      }
+      .radius-value {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        color: var(--text-muted);
+      }
+
+      /* =========================================================
+     Cards
+     ========================================================= */
+      .card-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-xl);
+      }
+      .card-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-xl);
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-2xl);
+        transition:
+          transform 0.2s,
+          border-color 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: var(--primary);
+      }
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        background: color-mix(in srgb, var(--primary) 15%, transparent);
+        color: var(--primary);
+        display: grid;
+        place-items: center;
+        margin-bottom: var(--space-lg);
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .card-title {
+        font-size: var(--fs-h5);
+        font-weight: var(--fw-h5);
+        color: var(--text);
+        margin-bottom: var(--space-sm);
+      }
+      .card-body {
+        font-size: var(--fs-body-md);
+        color: var(--text-muted);
+        line-height: var(--lh-body-md);
+      }
+
+      /* Feature card variant */
+      .feature-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2xl);
+        padding: var(--space-3xl);
+      }
+      .feature-tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--accent);
+        margin-bottom: var(--space-md);
+      }
+      .feature-headline {
+        font-size: var(--fs-h3);
+        font-weight: var(--fw-h3);
+        line-height: var(--lh-h3);
+        color: var(--text);
+        margin-bottom: var(--space-lg);
+      }
+      .feature-body {
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body-lg);
+        color: var(--text-muted);
+      }
+
+      /* =========================================================
+     2-column / 3-column layouts
+     ========================================================= */
+      .col-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3xl);
+        align-items: center;
+      }
+      .col-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-xl);
+      }
+      .col-image {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2xl);
+        aspect-ratio: 4 / 3;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        position: relative;
+      }
+      .col-image::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 20% 30%,
+            color-mix(in srgb, var(--primary) 30%, transparent),
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            color-mix(in srgb, var(--accent) 30%, transparent),
+            transparent 50%
+          );
+      }
+      .col-image-label {
+        position: relative;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      /* =========================================================
+     Logo ticker
+     ========================================================= */
+      .ticker {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: var(--space-2xl) 0;
+        overflow: hidden;
+        position: relative;
+      }
+      .ticker::before,
+      .ticker::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 96px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .ticker::before {
+        left: 0;
+        background: linear-gradient(to right, var(--surface), transparent);
+      }
+      .ticker::after {
+        right: 0;
+        background: linear-gradient(to left, var(--surface), transparent);
+      }
+      .ticker-track {
+        display: flex;
+        gap: var(--space-5xl);
+        width: max-content;
+        animation: scroll 30s linear infinite;
+      }
+      .ticker-logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        color: var(--text-muted);
+        font-weight: 700;
+        font-size: var(--fs-h5);
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+      }
+      .ticker-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-sm);
+        background: var(--text-muted);
+        opacity: 0.6;
+      }
+      @keyframes scroll {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* =========================================================
+     Slider / Carousel
+     ========================================================= */
+      .slider {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2xl);
+        padding: var(--space-3xl);
+      }
+      .slider-stage {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius-xl);
+      }
+      .slider-track {
+        display: flex;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .slider-slide {
+        flex: 0 0 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-3xl);
+        text-align: center;
+      }
+      .slider-quote {
+        font-size: var(--fs-h4);
+        font-weight: var(--fw-h4);
+        line-height: var(--lh-h4);
+        color: var(--text);
+        margin-bottom: var(--space-xl);
+        letter-spacing: -0.01em;
+      }
+      .slider-attribution {
+        font-size: var(--fs-body-sm);
+        color: var(--text-muted);
+      }
+      .slider-attribution strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .slider-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: var(--space-md);
+        margin-top: var(--space-xl);
+      }
+      .slider-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-full);
+        background: var(--bg);
+        border: 1px solid var(--border);
+        color: var(--text);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        transition: all 0.18s;
+      }
+      .slider-btn:hover {
+        background: var(--primary);
+        color: #ffffff;
+        border-color: var(--primary);
+      }
+      .slider-dots {
+        display: flex;
+        gap: var(--space-sm);
+      }
+      .slider-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        background: var(--border);
+        border: none;
+        cursor: pointer;
+        transition:
+          background 0.18s,
+          width 0.18s;
+      }
+      .slider-dot.active {
+        background: var(--primary);
+        width: 24px;
+      }
+
+      /* =========================================================
+     Stats / Metrics
+     ========================================================= */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-lg);
+      }
+      .stat {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-xl);
+      }
+      .stat-value {
+        font-size: var(--fs-h2);
+        font-weight: var(--fw-h2);
+        line-height: 1;
+        color: var(--primary);
+        margin-bottom: var(--space-sm);
+        letter-spacing: -0.02em;
+      }
+      .stat-label {
+        font-size: var(--fs-body-sm);
+        color: var(--text-muted);
+      }
+
+      /* =========================================================
+     Badges & chips
+     ========================================================= */
+      .badge-row {
+        display: flex;
+        gap: var(--space-sm);
+        flex-wrap: wrap;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        font-size: var(--fs-body-xs);
+        font-weight: 600;
+        padding: var(--space-xs) var(--space-md);
+        border-radius: var(--radius-full);
+      }
+      .badge.primary {
+        background: color-mix(in srgb, var(--primary) 15%, transparent);
+        color: var(--primary);
+      }
+      .badge.success {
+        background: color-mix(in srgb, var(--success) 15%, transparent);
+        color: var(--success);
+      }
+      .badge.warning {
+        background: color-mix(in srgb, var(--warning) 18%, transparent);
+        color: var(--warning);
+      }
+      .badge.danger {
+        background: color-mix(in srgb, var(--danger) 15%, transparent);
+        color: var(--danger);
+      }
+      .badge.neutral {
+        background: var(--surface);
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+      }
+
+      /* =========================================================
+     Gradient previews
+     ========================================================= */
+      .gradient-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-xl);
+      }
+      .gradient-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+      }
+      .gradient-preview {
+        height: 200px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+      }
+      .gradient-preview .pair-pill {
+        position: absolute;
+        top: var(--space-md);
+        right: var(--space-md);
+        background: rgba(15, 23, 41, 0.7);
+        color: #ffffff;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-xs);
+        font-weight: 500;
+        padding: var(--space-xs) var(--space-md);
+        border-radius: var(--radius-full);
+      }
+      .gradient-meta {
+        padding: var(--space-lg) var(--space-xl);
+      }
+      .gradient-token {
+        font-family: var(--font-mono);
+        font-size: var(--fs-body-sm);
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: var(--space-xs);
+      }
+      .gradient-desc {
+        font-size: var(--fs-body-sm);
+        color: var(--text-muted);
+        line-height: var(--lh-body-sm);
+      }
+
+      /* The four official gradient tokens, used inline on .gradient-preview.
+     Preview tiles are hardcoded so each tile always shows its own canonical
+     look regardless of which theme is currently active. */
+      .grad-main-solid {
+        background: #ffffff;
+      }
+      .grad-dark {
+        background: #000000;
+      }
+      .grad-main-mesh {
+        background:
+          url("./assets/main-theme-bg.png") center / cover no-repeat,
+          #f1f6fe;
+      }
+      .grad-odyssey-aurora {
+        background:
+          url("./assets/odyssey-theme-bg.png") center / cover no-repeat,
+          #10002a;
+      }
+
+      /* =========================================================
+     Footer
+     ========================================================= */
+      .footer {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: var(--space-4xl) 0 var(--space-2xl);
+        margin-top: var(--space-5xl);
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: var(--space-3xl);
+        margin-bottom: var(--space-3xl);
+      }
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+        color: var(--text);
+      }
+      .footer-tagline {
+        font-size: var(--fs-body-sm);
+        color: var(--text-muted);
+        max-width: 320px;
+        line-height: var(--lh-body-sm);
+      }
+      .footer-col h6 {
+        color: var(--text);
+        margin-bottom: var(--space-lg);
+      }
+      .footer-col ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+      }
+      .footer-col a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: var(--fs-body-sm);
+        transition: color 0.18s;
+      }
+      .footer-col a:hover {
+        color: var(--primary);
+      }
+      .footer-bottom {
+        border-top: 1px solid var(--border);
+        padding-top: var(--space-xl);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: var(--fs-body-xs);
+        color: var(--text-muted);
+        flex-wrap: wrap;
+        gap: var(--space-md);
+      }
+
+      /* =========================================================
+     Responsive
+     ========================================================= */
+      @media (max-width: 960px) {
+        .nav-links {
+          display: none;
+        }
+        .card-grid-3,
+        .col-3 {
+          grid-template-columns: 1fr 1fr;
+        }
+        .col-2 {
+          grid-template-columns: 1fr;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        :root {
+          --fs-h1: 2.25rem;
+          --fs-h2: 1.85rem;
+          --fs-h3: 1.5rem;
+        }
+        .hero {
+          padding: var(--space-3xl) 0 var(--space-2xl);
+        }
+        .section {
+          padding: var(--space-3xl) 0;
+        }
+        .card-grid-3,
+        .card-grid-2,
+        .col-3,
+        .gradient-grid {
+          grid-template-columns: 1fr;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+        .type-row {
+          grid-template-columns: 1fr;
+          gap: var(--space-sm);
+        }
+        .type-meta {
+          text-align: left;
+        }
+        .nav-inner {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- =================== NAV =================== -->
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-brand">
+          <svg
+            class="brand-logo"
+            viewBox="0 0 300 47.4"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-label="GoComet"
+            role="img"
+          >
+            <path
+              class="logo-dark"
+              d="M206.1,21.2v21.5h-8.3V4.9h8.1c.4,0,.8.6.9.9,3,4.9,5.8,9.6,8.7,14.5.2.4.6.8.9,1.3.4-.6.6-.9.9-1.3,2.8-4.9,5.8-9.6,8.7-14.5.6-.9,1.1-1.1,2.1-1.1h7v38h-8.3v-21.6h-.4c-.2.4-.6.8-.8,1.3-2.6,4.5-5.5,9.1-8.1,13.4-.9,1.5-1.3,1.5-2.2,0-2.8-4.9-5.8-9.6-8.7-14.5,0-.2-.5-.1-.5-.1ZM171.8,35c6.2,0,10.9-4.9,10.9-11.3s-4.7-11.5-11.1-11.5-10.9,4.9-10.9,11.5,4.7,11.5,11.1,11.3M171.8,3.9c10.9,0,19.4,8.9,19.4,19.8s-8.7,19.8-19.4,19.8-19.4-8.7-19.4-19.8,8.4-19.8,19.4-19.8"
+            />
+            <path
+              class="logo-blue"
+              d="M88.8,12.2c-6.4,0-11.1,4.7-11.1,11.5s4.5,11.5,11.1,11.5,11.1-4.9,11.1-11.5c.3-6.6-4.7-11.5-11.1-11.5M88.8,43.3c-10.9,0-19.4-8.7-19.2-19.8,0-10.8,8.5-19.4,19.2-19.4h.2c9.8,0,19.4,7.5,19.2,19.6,0,12.6-9.9,19.8-19.4,19.6"
+            />
+            <path
+              class="logo-dark"
+              d="M264.9,19.3v8.1h-13.2v7h14.9v8.1h-23.4V4.7h23v8h-14.5v6.4h13.2v.2h0ZM148.6,12.8l-7.2,4.1c-5.1-5.5-12.2-6-16.8-1.5-4.1,4.1-4,12.6.2,16.8,3.6,3.6,12.2,4.7,16.6-1.7l7,4.1c-2.5,5.8-11.5,9.8-19,8.7-9.1-1.5-15.7-8.7-16.2-17.7-.6-9.8,4.3-17.9,13.2-20.7,8.4-2.7,17.9.5,22.2,7.9"
+            />
+            <path
+              class="logo-blue"
+              d="M56,29h-6.2q-3.8,0-3.8-3.8t3.4-3.6h13.4c1.3,0,1.7.4,1.7,1.7,0,5.5-.9,10.5-4.9,14.7-3.2,3.4-7.2,4.9-11.7,5.3-3.4.2-6.6-.2-9.8-1.3-.6-.2-1.3-.4-2.1-.4H13.8c-2.8,0-4.7-1.7-4.7-4.3s1.9-4.3,4.9-4.3h23.6c.8,0,1.3.2,1.9.6,3.8,2.1,7.7,2.5,11.9.9,2.2-1.2,3.7-2.7,4.6-5.5"
+            />
+            <path
+              class="logo-dark"
+              d="M288.5,42.7h-8.5V12.9h-9.6V4.7h27.5v8h-7.5q-2.1,0-2.1,2.1l.2,27.9h0Z"
+            />
+            <path
+              class="logo-blue"
+              d="M61.7,12.6l-6.8,4c-1.9-2.1-4-3.4-6.8-4s-5.7-.2-8.3,1.1c-.8.4-1.7.6-2.6.8H13.2c-3,0-4.9-2.6-4.1-5.5.6-1.9,2.2-3.2,4.5-3.2h15.7c4.5,0,8.9-.4,13.4-1.1,7.2-1.3,13.6,1.1,18.3,7.2.3-.1.3.3.7.7M36.2,17.1c-2.5,4.5-2.5,8.7-.2,13.2h-7c-1.3,0-2.2,0-2.6-1.7,0-.4-.9-.6-1.5-.6H7.4c-.8,0-1.3,0-2.1-.2-2.2-.6-3.4-2.5-3.2-4.7.2-2.1,1.9-3.6,4-3.6h18.5c1.1,0,1.9-.2,2.1-1.5,0-.4.6-.8.9-.8,3-.1,5.6-.1,8.6-.1"
+            />
+          </svg>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#typography">Typography</a></li>
+          <li><a href="#colors">Colors</a></li>
+          <li><a href="#spacing">Spacing</a></li>
+          <li><a href="#radius">Radius</a></li>
+          <li><a href="#gradients">Gradients</a></li>
+          <li><a href="#components">Components</a></li>
+          <li><a href="#layouts">Layouts</a></li>
+        </ul>
+        <nav class="theme-switcher" aria-label="Theme switcher">
+          <button data-set-theme="main" class="active">Main</button>
+          <button data-set-theme="dark">Dark</button>
+          <button data-set-theme="agentic-ai">Agentic AI</button>
+          <button data-set-theme="odyssey">Odyssey</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- =================== HERO =================== -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-eyebrow">v1.0 · Style Guide</div>
+        <h1>
+          One design system, <span class="accent">four themes</span>, infinite
+          consistency.
+        </h1>
+        <p class="hero-lede">
+          A live reference for every token, component, and layout pattern in our
+          product family. Switch themes from the top-right — every element on
+          this page restyles in one variable scope change.
+        </p>
+        <div class="hero-actions">
+          <a href="#typography" class="btn btn-primary">Browse tokens →</a>
+          <a href="#components" class="btn btn-secondary">View components</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== STATS =================== -->
+    <section class="section">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-value">4</div>
+            <div class="stat-label">Official themes</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">11</div>
+            <div class="stat-label">Type sizes</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">10</div>
+            <div class="stat-label">Spacing tokens</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">8</div>
+            <div class="stat-label">Radius tokens</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== TYPOGRAPHY =================== -->
+    <section class="section section-alt" id="typography">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">01 — Typography</div>
+          <h2 class="section-title">Type scale</h2>
+          <p class="section-lede">
+            A 1.25 modular scale built on Proxima Nova. Headings
+            <code>h1</code>–<code>h6</code>
+            plus four body sizes and a caption. Every value below is the actual
+            rendered token.
+          </p>
+        </div>
+
+        <div class="type-list">
+          <div class="type-row">
+            <span class="type-token">h1</span>
+            <h1>The quick brown fox</h1>
+            <span class="type-meta">3.052rem · 700 · 1.1</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">h2</span>
+            <h2>The quick brown fox</h2>
+            <span class="type-meta">2.441rem · 700 · 1.15</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">h3</span>
+            <h3>The quick brown fox</h3>
+            <span class="type-meta">1.953rem · 600 · 1.2</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">h4</span>
+            <h4>The quick brown fox</h4>
+            <span class="type-meta">1.563rem · 600 · 1.3</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">h5</span>
+            <h5>The quick brown fox</h5>
+            <span class="type-meta">1.25rem · 600 · 1.4</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">h6</span>
+            <h6>The quick brown fox</h6>
+            <span class="type-meta">1rem · 600 · 1.5</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">body-lg</span>
+            <p style="font-size: var(--fs-body-lg)">
+              The quick brown fox jumps over the lazy dog
+            </p>
+            <span class="type-meta">1.125rem · 400 · 1.6</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">body-md</span>
+            <p style="font-size: var(--fs-body-md)">
+              The quick brown fox jumps over the lazy dog
+            </p>
+            <span class="type-meta">1rem · 400 · 1.6</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">body-sm</span>
+            <p style="font-size: var(--fs-body-sm)">
+              The quick brown fox jumps over the lazy dog
+            </p>
+            <span class="type-meta">0.875rem · 400 · 1.5</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">body-xs</span>
+            <p style="font-size: var(--fs-body-xs)">
+              The quick brown fox jumps over the lazy dog
+            </p>
+            <span class="type-meta">0.75rem · 400 · 1.4</span>
+          </div>
+          <div class="type-row">
+            <span class="type-token">caption</span>
+            <p
+              style="
+                font-size: var(--fs-caption);
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+              "
+            >
+              The quick brown fox
+            </p>
+            <span class="type-meta">0.6875rem · 500 · 1.3</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== COLORS =================== -->
+    <section class="section" id="colors">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">02 — Colors</div>
+          <h2 class="section-title">Color tokens</h2>
+          <p class="section-lede">
+            Every token below recolors when you switch themes. Hex values
+            displayed match the currently active theme — try the switcher to see
+            them shift.
+          </p>
+        </div>
+
+        <div class="palette-grid">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--primary)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">primary</div>
+              <div class="swatch-hex" data-token="primary"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div
+              class="swatch-color"
+              style="background: var(--primary-hover)"
+            ></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">primary-hover</div>
+              <div class="swatch-hex" data-token="primary-hover"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div
+              class="swatch-color"
+              style="background: var(--secondary)"
+            ></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">secondary</div>
+              <div class="swatch-hex" data-token="secondary"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--accent)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">accent</div>
+              <div class="swatch-hex" data-token="accent"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--success)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">success</div>
+              <div class="swatch-hex" data-token="success"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--warning)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">warning</div>
+              <div class="swatch-hex" data-token="warning"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--danger)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">danger</div>
+              <div class="swatch-hex" data-token="danger"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div
+              class="swatch-color"
+              style="
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+              "
+            ></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">bg</div>
+              <div class="swatch-hex" data-token="bg"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--surface)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">surface</div>
+              <div class="swatch-hex" data-token="surface"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--border)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">border</div>
+              <div class="swatch-hex" data-token="border"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--text)"></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">text</div>
+              <div class="swatch-hex" data-token="text"></div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div
+              class="swatch-color"
+              style="background: var(--text-muted)"
+            ></div>
+            <div class="swatch-meta">
+              <div class="swatch-token">text-muted</div>
+              <div class="swatch-hex" data-token="text-muted"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--space-2xl)">
+          <h5 style="margin-bottom: var(--space-lg)">Status badges</h5>
+          <div class="badge-row">
+            <span class="badge primary">Primary</span>
+            <span class="badge success">Success</span>
+            <span class="badge warning">Warning</span>
+            <span class="badge danger">Danger</span>
+            <span class="badge neutral">Neutral</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== SPACING =================== -->
+    <section class="section section-alt" id="spacing">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">03 — Spacing</div>
+          <h2 class="section-title">Spacing scale</h2>
+          <p class="section-lede">
+            A 4-pixel base unit. Use these tokens for padding, margin, and gap —
+            never raw pixel values.
+          </p>
+        </div>
+
+        <div class="spacing-list">
+          <div class="space-row">
+            <span class="space-token">xs</span
+            ><span class="space-value">4px</span>
+            <div class="space-bar" style="width: 4px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">sm</span
+            ><span class="space-value">8px</span>
+            <div class="space-bar" style="width: 8px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">md</span
+            ><span class="space-value">12px</span>
+            <div class="space-bar" style="width: 12px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">lg</span
+            ><span class="space-value">16px</span>
+            <div class="space-bar" style="width: 16px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">xl</span
+            ><span class="space-value">24px</span>
+            <div class="space-bar" style="width: 24px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">2xl</span
+            ><span class="space-value">32px</span>
+            <div class="space-bar" style="width: 32px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">3xl</span
+            ><span class="space-value">48px</span>
+            <div class="space-bar" style="width: 48px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">4xl</span
+            ><span class="space-value">64px</span>
+            <div class="space-bar" style="width: 64px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">5xl</span
+            ><span class="space-value">96px</span>
+            <div class="space-bar" style="width: 96px"></div>
+          </div>
+          <div class="space-row">
+            <span class="space-token">6xl</span
+            ><span class="space-value">128px</span>
+            <div class="space-bar" style="width: 128px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== RADIUS =================== -->
+    <section class="section" id="radius">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">04 — Radius</div>
+          <h2 class="section-title">Border radius</h2>
+          <p class="section-lede">
+            Eight rounding tokens, from sharp edges to pill shapes. Use the
+            smallest value that reads as "rounded" for the surface size.
+          </p>
+        </div>
+
+        <div class="radius-grid">
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-none)"
+            ></div>
+            <div class="radius-token">radius-none</div>
+            <div class="radius-value">0px</div>
+          </div>
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-xs)"
+            ></div>
+            <div class="radius-token">radius-xs</div>
+            <div class="radius-value">2px</div>
+          </div>
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-sm)"
+            ></div>
+            <div class="radius-token">radius-sm</div>
+            <div class="radius-value">4px</div>
+          </div>
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-md)"
+            ></div>
+            <div class="radius-token">radius-md</div>
+            <div class="radius-value">8px</div>
+          </div>
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-lg)"
+            ></div>
+            <div class="radius-token">radius-lg</div>
+            <div class="radius-value">12px</div>
+          </div>
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-xl)"
+            ></div>
+            <div class="radius-token">radius-xl</div>
+            <div class="radius-value">16px</div>
+          </div>
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-2xl)"
+            ></div>
+            <div class="radius-token">radius-2xl</div>
+            <div class="radius-value">24px</div>
+          </div>
+          <div class="radius-tile">
+            <div
+              class="radius-demo"
+              style="border-radius: var(--radius-full)"
+            ></div>
+            <div class="radius-token">radius-full</div>
+            <div class="radius-value">9999px</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== GRADIENTS =================== -->
+    <section class="section section-alt" id="gradients">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">05 — Background Gradients</div>
+          <h2 class="section-title">Background gradients</h2>
+          <p class="section-lede">
+            Four official background tokens. The two CSS gradients work as
+            generic light/dark fallbacks; the two image gradients are pinned to
+            the Main and Odyssey themes. Apply only to <code>body</code> or the
+            top-level container — never to individual components.
+          </p>
+        </div>
+
+        <div class="gradient-grid">
+          <div class="gradient-card">
+            <div
+              class="gradient-preview grad-main-solid"
+              style="border: 1px solid var(--border)"
+            >
+              <span class="pair-pill">Main</span>
+            </div>
+            <div class="gradient-meta">
+              <div class="gradient-token">bg-main-solid</div>
+              <div class="gradient-desc">
+                Clean flat surface — no gradient. Resolves to the theme's
+                <code>--bg</code> token so the page color follows the theme.
+              </div>
+            </div>
+          </div>
+
+          <div class="gradient-card">
+            <div class="gradient-preview grad-dark">
+              <span class="pair-pill">Dark</span>
+            </div>
+            <div class="gradient-meta">
+              <div class="gradient-token">bg-dark</div>
+              <div class="gradient-desc">
+                Clean flat surface — no gradient. Resolves to the theme's
+                <code>--bg</code> token so the page color follows the theme.
+              </div>
+            </div>
+          </div>
+
+          <div class="gradient-card">
+            <div class="gradient-preview grad-main-mesh">
+              <span class="pair-pill">Agentic AI</span>
+            </div>
+            <div class="gradient-meta">
+              <div class="gradient-token">bg-main-mesh</div>
+              <div class="gradient-desc">
+                Custom mesh image — soft whites, pale blues, and a periwinkle
+                pocket. File: <code>assets/main-theme-bg.png</code>.
+              </div>
+            </div>
+          </div>
+
+          <div class="gradient-card">
+            <div class="gradient-preview grad-odyssey-aurora">
+              <span class="pair-pill">Odyssey</span>
+            </div>
+            <div class="gradient-meta">
+              <div class="gradient-token">bg-odyssey-aurora</div>
+              <div class="gradient-desc">
+                Custom aurora image — deep indigo to luminous violet with a warm
+                magenta lift. File: <code>assets/odyssey-theme-bg.png</code>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== BUTTONS =================== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">06 — Buttons</div>
+          <h2 class="section-title">Button styles</h2>
+          <p class="section-lede">
+            Three core variants — primary for main actions, secondary for
+            alternates, ghost for tertiary or in-surface actions.
+          </p>
+        </div>
+        <div style="display: flex; gap: var(--space-md); flex-wrap: wrap">
+          <button class="btn btn-primary">Primary action</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button
+            class="btn btn-primary"
+            disabled
+            style="opacity: 0.5; cursor: not-allowed"
+          >
+            Disabled
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== COMPONENTS — CARDS =================== -->
+    <section class="section section-alt" id="components">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">07 — Components</div>
+          <h2 class="section-title">Cards (3-column grid)</h2>
+          <p class="section-lede">
+            Standard card pattern at three columns. Hover for elevation. Use
+            this layout for feature lists, integration grids, or product
+            capabilities.
+          </p>
+        </div>
+
+        <div class="card-grid-3">
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <h5 class="card-title">Lightning fast</h5>
+            <p class="card-body">
+              Sub-100ms response across every endpoint, backed by a global edge
+              network and aggressive caching.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">◆</div>
+            <h5 class="card-title">Token-driven</h5>
+            <p class="card-body">
+              Every value lives in one variable scope. Swap themes by changing a
+              single attribute on the root element.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">✦</div>
+            <h5 class="card-title">Composable</h5>
+            <p class="card-body">
+              Mix and match primitives to build the surfaces you need without
+              writing a single off-palette color or off-scale size.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== 2-COLUMN LAYOUT =================== -->
+    <section class="section" id="layouts">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">08 — Layouts</div>
+          <h2 class="section-title">Two-column layout</h2>
+          <p class="section-lede">
+            A balanced 1:1 split for marketing and editorial contexts. Stacks to
+            a single column under 960px.
+          </p>
+        </div>
+
+        <div class="col-2">
+          <div>
+            <div class="feature-tag">Built for scale</div>
+            <h3 class="feature-headline">
+              Designed once, deployed everywhere your product lives.
+            </h3>
+            <p class="feature-body">
+              The same primitives power our marketing site, web app, internal
+              tools, and customer-facing dashboards. Swap themes per surface,
+              never break consistency.
+            </p>
+            <div style="margin-top: var(--space-xl)">
+              <a href="#" class="btn btn-primary">Get started →</a>
+            </div>
+          </div>
+          <div class="col-image">
+            <span class="col-image-label">Image / illustration</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== 3-COLUMN LAYOUT =================== -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">09 — Layouts</div>
+          <h2 class="section-title">Three-column layout</h2>
+          <p class="section-lede">
+            Equal-width columns for capability lists, value props, or dense
+            overviews. Collapses to two columns on tablet, one on mobile.
+          </p>
+        </div>
+
+        <div class="col-3">
+          <div class="col-image" style="aspect-ratio: 1 / 1">
+            <span class="col-image-label">Visual A</span>
+          </div>
+          <div class="col-image" style="aspect-ratio: 1 / 1">
+            <span class="col-image-label">Visual B</span>
+          </div>
+          <div class="col-image" style="aspect-ratio: 1 / 1">
+            <span class="col-image-label">Visual C</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== FEATURE CARD (2-col mixed) =================== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">10 — Components</div>
+          <h2 class="section-title">Feature card grid</h2>
+          <p class="section-lede">
+            Two-up feature blocks for highlighting paired capabilities or
+            before/after comparisons.
+          </p>
+        </div>
+
+        <div class="card-grid-2">
+          <div class="feature-card">
+            <div class="feature-tag">Before</div>
+            <h4 class="feature-headline">
+              Scattered tokens, inconsistent surfaces
+            </h4>
+            <p class="feature-body">
+              Hard-coded hex values, ad-hoc spacing decisions, and component
+              drift between teams.
+            </p>
+          </div>
+          <div class="feature-card" style="border-color: var(--primary)">
+            <div class="feature-tag" style="color: var(--primary)">After</div>
+            <h4 class="feature-headline">One source of truth, four themes</h4>
+            <p class="feature-body">
+              Every component reads from the same variable scope. Theme changes
+              flow through automatically.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== TESTIMONIAL SLIDER =================== -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">11 — Components</div>
+          <h2 class="section-title">Testimonial slider</h2>
+          <p class="section-lede">
+            A simple slide-and-dot pattern for rotating quotes, screenshots, or
+            feature highlights.
+          </p>
+        </div>
+
+        <div class="slider">
+          <div class="slider-stage">
+            <div class="slider-track" id="sliderTrack">
+              <div class="slider-slide">
+                <p class="slider-quote">
+                  "Standardizing on this design system cut our component review
+                  time in half."
+                </p>
+                <p class="slider-attribution">
+                  <strong>Alex Rivera</strong> · Design Lead, Acme Corp
+                </p>
+              </div>
+              <div class="slider-slide">
+                <p class="slider-quote">
+                  "Theme switching used to be a refactor. Now it's a single
+                  attribute change."
+                </p>
+                <p class="slider-attribution">
+                  <strong>Priya Shah</strong> · Engineering Manager, Beta Inc
+                </p>
+              </div>
+              <div class="slider-slide">
+                <p class="slider-quote">
+                  "We shipped four white-label products in the time it used to
+                  take to ship one."
+                </p>
+                <p class="slider-attribution">
+                  <strong>Marcus Lee</strong> · CTO, Gamma Labs
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="slider-controls">
+            <button class="slider-btn" id="slidePrev" aria-label="Previous">
+              ‹
+            </button>
+            <div class="slider-dots" id="sliderDots">
+              <button
+                class="slider-dot active"
+                data-slide="0"
+                aria-label="Slide 1"
+              ></button>
+              <button
+                class="slider-dot"
+                data-slide="1"
+                aria-label="Slide 2"
+              ></button>
+              <button
+                class="slider-dot"
+                data-slide="2"
+                aria-label="Slide 3"
+              ></button>
+            </div>
+            <button class="slider-btn" id="slideNext" aria-label="Next">
+              ›
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== LOGO TICKER =================== -->
+    <section style="margin: var(--space-3xl) 0">
+      <div
+        class="container"
+        style="text-align: center; margin-bottom: var(--space-xl)"
+      >
+        <p
+          style="
+            font-size: var(--fs-body-sm);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 500;
+          "
+        >
+          Trusted by teams at
+        </p>
+      </div>
+      <div class="ticker">
+        <div class="ticker-track">
+          <!-- repeated twice for seamless loop -->
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Northwind
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Contoso
+          </div>
+          <div class="ticker-logo"><span class="ticker-mark"></span>Globex</div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Initech
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Umbrella
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Stark Co
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Wayne Ent
+          </div>
+          <div class="ticker-logo"><span class="ticker-mark"></span>Acme</div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Northwind
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Contoso
+          </div>
+          <div class="ticker-logo"><span class="ticker-mark"></span>Globex</div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Initech
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Umbrella
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Stark Co
+          </div>
+          <div class="ticker-logo">
+            <span class="ticker-mark"></span>Wayne Ent
+          </div>
+          <div class="ticker-logo"><span class="ticker-mark"></span>Acme</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== FOOTER =================== -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">
+              <svg
+                class="brand-logo"
+                viewBox="0 0 300 47.4"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="GoComet"
+                role="img"
+              >
+                <path
+                  class="logo-dark"
+                  d="M206.1,21.2v21.5h-8.3V4.9h8.1c.4,0,.8.6.9.9,3,4.9,5.8,9.6,8.7,14.5.2.4.6.8.9,1.3.4-.6.6-.9.9-1.3,2.8-4.9,5.8-9.6,8.7-14.5.6-.9,1.1-1.1,2.1-1.1h7v38h-8.3v-21.6h-.4c-.2.4-.6.8-.8,1.3-2.6,4.5-5.5,9.1-8.1,13.4-.9,1.5-1.3,1.5-2.2,0-2.8-4.9-5.8-9.6-8.7-14.5,0-.2-.5-.1-.5-.1ZM171.8,35c6.2,0,10.9-4.9,10.9-11.3s-4.7-11.5-11.1-11.5-10.9,4.9-10.9,11.5,4.7,11.5,11.1,11.3M171.8,3.9c10.9,0,19.4,8.9,19.4,19.8s-8.7,19.8-19.4,19.8-19.4-8.7-19.4-19.8,8.4-19.8,19.4-19.8"
+                />
+                <path
+                  class="logo-blue"
+                  d="M88.8,12.2c-6.4,0-11.1,4.7-11.1,11.5s4.5,11.5,11.1,11.5,11.1-4.9,11.1-11.5c.3-6.6-4.7-11.5-11.1-11.5M88.8,43.3c-10.9,0-19.4-8.7-19.2-19.8,0-10.8,8.5-19.4,19.2-19.4h.2c9.8,0,19.4,7.5,19.2,19.6,0,12.6-9.9,19.8-19.4,19.6"
+                />
+                <path
+                  class="logo-dark"
+                  d="M264.9,19.3v8.1h-13.2v7h14.9v8.1h-23.4V4.7h23v8h-14.5v6.4h13.2v.2h0ZM148.6,12.8l-7.2,4.1c-5.1-5.5-12.2-6-16.8-1.5-4.1,4.1-4,12.6.2,16.8,3.6,3.6,12.2,4.7,16.6-1.7l7,4.1c-2.5,5.8-11.5,9.8-19,8.7-9.1-1.5-15.7-8.7-16.2-17.7-.6-9.8,4.3-17.9,13.2-20.7,8.4-2.7,17.9.5,22.2,7.9"
+                />
+                <path
+                  class="logo-blue"
+                  d="M56,29h-6.2q-3.8,0-3.8-3.8t3.4-3.6h13.4c1.3,0,1.7.4,1.7,1.7,0,5.5-.9,10.5-4.9,14.7-3.2,3.4-7.2,4.9-11.7,5.3-3.4.2-6.6-.2-9.8-1.3-.6-.2-1.3-.4-2.1-.4H13.8c-2.8,0-4.7-1.7-4.7-4.3s1.9-4.3,4.9-4.3h23.6c.8,0,1.3.2,1.9.6,3.8,2.1,7.7,2.5,11.9.9,2.2-1.2,3.7-2.7,4.6-5.5"
+                />
+                <path
+                  class="logo-dark"
+                  d="M288.5,42.7h-8.5V12.9h-9.6V4.7h27.5v8h-7.5q-2.1,0-2.1,2.1l.2,27.9h0Z"
+                />
+                <path
+                  class="logo-blue"
+                  d="M61.7,12.6l-6.8,4c-1.9-2.1-4-3.4-6.8-4s-5.7-.2-8.3,1.1c-.8.4-1.7.6-2.6.8H13.2c-3,0-4.9-2.6-4.1-5.5.6-1.9,2.2-3.2,4.5-3.2h15.7c4.5,0,8.9-.4,13.4-1.1,7.2-1.3,13.6,1.1,18.3,7.2.3-.1.3.3.7.7M36.2,17.1c-2.5,4.5-2.5,8.7-0.2,13.2h-7c-1.3,0-2.2,0-2.6-1.7,0-.4-.9-.6-1.5-.6H7.4c-.8,0-1.3,0-2.1-.2-2.2-.6-3.4-2.5-3.2-4.7.2-2.1,1.9-3.6,4-3.6h18.5c1.1,0,1.9-.2,2.1-1.5,0-.4.6-.8.9-.8,3-.1,5.6-.1,8.6-.1"
+                />
+              </svg>
+            </div>
+            <p class="footer-tagline">
+              A single source of truth for typography, color, spacing, and
+              components — themed for every product surface.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h6>Tokens</h6>
+            <ul>
+              <li><a href="#typography">Typography</a></li>
+              <li><a href="#colors">Colors</a></li>
+              <li><a href="#spacing">Spacing</a></li>
+              <li><a href="#radius">Radius</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h6>Components</h6>
+            <ul>
+              <li><a href="#components">Cards</a></li>
+              <li><a href="#components">Buttons</a></li>
+              <li><a href="#components">Slider</a></li>
+              <li><a href="#components">Badges</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h6>Resources</h6>
+            <ul>
+              <li><a href="#">Figma library</a></li>
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Changelog</a></li>
+              <li><a href="#">Contribute</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 Design System · v1.0</span>
+          <span>Built with the company design system, dogfooded daily.</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /* ---------- Theme switcher ---------- */
+      const updateSwatchHex = () => {
+        const cs = getComputedStyle(document.documentElement);
+        document.querySelectorAll("[data-token]").forEach((el) => {
+          const token = el.getAttribute("data-token");
+          const value = cs.getPropertyValue("--" + token).trim();
+          el.textContent = value || "—";
+        });
+      };
+
+      document.querySelectorAll("[data-set-theme]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const theme = btn.getAttribute("data-set-theme");
+          document.documentElement.setAttribute("data-theme", theme);
+          document
+            .querySelectorAll("[data-set-theme]")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          updateSwatchHex();
+        });
+      });
+
+      // Initial swatch hex display
+      updateSwatchHex();
+
+      /* ---------- Slider ---------- */
+      const track = document.getElementById("sliderTrack");
+      const dots = document.querySelectorAll("#sliderDots .slider-dot");
+      const total = dots.length;
+      let current = 0;
+
+      const goTo = (i) => {
+        current = (i + total) % total;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dots.forEach((d, idx) => d.classList.toggle("active", idx === current));
+      };
+
+      document
+        .getElementById("slidePrev")
+        .addEventListener("click", () => goTo(current - 1));
+      document
+        .getElementById("slideNext")
+        .addEventListener("click", () => goTo(current + 1));
+      dots.forEach((dot, idx) =>
+        dot.addEventListener("click", () => goTo(idx)),
+      );
+
+      // auto-advance
+      setInterval(() => goTo(current + 1), 6000);
+    </script>
+  </body>
+</html>
