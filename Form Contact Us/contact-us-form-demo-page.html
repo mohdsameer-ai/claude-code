@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="main">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact Us — GoComet</title>
+<style>
+  /* --------------------------------------------------------------
+     Fonts
+  -------------------------------------------------------------- */
+  @font-face {
+    font-family: "Proxima Nova";
+    src: url("assets/fonts/ProximaNova-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Proxima Nova";
+    src: url("assets/fonts/ProximaNova-Semibold.woff2") format("woff2");
+    font-weight: 600; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Proxima Nova";
+    src: url("assets/fonts/ProximaNova-Bold.woff2") format("woff2");
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+
+  /* --------------------------------------------------------------
+     Tokens — Main theme
+  -------------------------------------------------------------- */
+  :root {
+    --primary: #0054FF;
+    --primary-hover: #003E9C;
+    --secondary: #3376FF;
+    --accent: #A033FF;
+    --success: #179E60;
+    --warning: #F68C00;
+    --danger: #EB2E2E;
+    --bg: #FFFFFF;
+    --surface: #F0F6FF;
+    --border: #DADDE3;
+    --text: #0C1C3C;
+    --text-muted: #8E98A8;
+
+    --brand-navy: #0B1A31;
+
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 24px;
+    --space-2xl: 32px;
+    --space-3xl: 48px;
+    --space-4xl: 64px;
+    --space-5xl: 96px;
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+  }
+
+  /* --------------------------------------------------------------
+     Base
+  -------------------------------------------------------------- */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Proxima Nova", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+  }
+  @media (max-width: 640px) {
+    .container { padding: 0 var(--space-lg); }
+  }
+
+  /* --------------------------------------------------------------
+     Nav
+  -------------------------------------------------------------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-xl);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xl);
+  }
+  .nav img { height: 28px; width: auto; display: block; }
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-md);
+    transition: background .2s;
+  }
+  .nav-cta:hover { background: var(--primary-hover); }
+
+  /* --------------------------------------------------------------
+     Hero / contact split
+  -------------------------------------------------------------- */
+  .contact-section {
+    padding: var(--space-4xl) 0 var(--space-5xl);
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: var(--space-4xl);
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .contact-grid { grid-template-columns: 1fr; gap: var(--space-3xl); }
+    .contact-section { padding: var(--space-3xl) 0; }
+  }
+
+  /* Left side — copy + trust */
+  .contact-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-xl);
+  }
+  .contact-title {
+    font-size: 48.83px;
+    line-height: 1.1;
+    font-weight: 700;
+    margin: 0 0 var(--space-xl);
+    letter-spacing: -0.02em;
+  }
+  .contact-title .accent { color: var(--primary); }
+  .contact-lede {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-3xl);
+    max-width: 480px;
+  }
+
+  .contact-points {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-3xl);
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .contact-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    font-size: 15px;
+    color: var(--text);
+  }
+  .contact-points .check {
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--success) 15%, transparent);
+    color: var(--success);
+    display: grid;
+    place-items: center;
+    margin-top: 1px;
+  }
+  .contact-points .check svg { width: 12px; height: 12px; }
+
+  .trust-block {
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-3xl);
+    border-top: 1px solid var(--border);
+  }
+  .trust-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-lg);
+  }
+  .trust-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+  .trust-stat .value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.1;
+  }
+  .trust-stat .label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* --------------------------------------------------------------
+     Form Card
+  -------------------------------------------------------------- */
+  .form-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-3xl);
+    box-shadow:
+      0 1px 2px rgba(12, 28, 60, 0.04),
+      0 12px 32px rgba(12, 28, 60, 0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .form-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+  @media (max-width: 640px) {
+    .form-card { padding: var(--space-xl); }
+  }
+
+  .form-header { margin-bottom: var(--space-2xl); }
+  .form-header h2 {
+    font-size: 25px;
+    line-height: 1.3;
+    font-weight: 600;
+    margin: 0 0 var(--space-xs);
+    color: var(--text);
+  }
+  .form-header p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* Field rows / groups */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: var(--space-lg);
+  }
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .field-label .req { color: var(--danger); font-weight: 700; }
+
+  /* Inputs */
+  .input,
+  .select {
+    width: 100%;
+    height: 44px;
+    padding: 0 var(--space-md);
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    outline: none;
+  }
+  .input::placeholder { color: var(--text-muted); }
+  .input:hover, .select:hover { border-color: #B8BFCC; }
+  .input:focus, .select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+
+  /* Select — custom chevron */
+  .select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238E98A8' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 38px;
+    cursor: pointer;
+  }
+  .select:focus {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%230054FF' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  /* Phone composite field — single bordered group with embedded flag selector */
+  .phone-group {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    overflow: visible;
+    transition: border-color .15s, box-shadow .15s;
+    position: relative;
+  }
+  .phone-group:hover { border-color: #B8BFCC; }
+  .phone-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+  .phone-group .country-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--surface);
+    border: none;
+    border-right: 1px solid var(--border);
+    padding: 0 10px 0 12px;
+    height: 42px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    transition: background .15s;
+  }
+  .phone-group .country-trigger:hover { background: #E4EEFF; }
+  .phone-group .country-trigger .flag {
+    width: 20px;
+    height: 14px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex: 0 0 20px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+  }
+  .phone-group .country-trigger .flag svg { display: block; width: 100%; height: 100%; }
+  .phone-group .country-trigger .code { font-weight: 600; }
+  .phone-group .country-trigger .caret {
+    width: 10px; height: 10px;
+    color: var(--text-muted);
+    transition: transform .15s;
+  }
+  .phone-group .country-trigger[aria-expanded="true"] .caret { transform: rotate(180deg); }
+  .phone-group .phone-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    height: 42px;
+    padding: 0 var(--space-md);
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .phone-group .phone-input::placeholder { color: var(--text-muted); }
+
+  /* Country dropdown menu */
+  .country-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 280px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow:
+      0 4px 12px rgba(12, 28, 60, 0.08),
+      0 12px 32px rgba(12, 28, 60, 0.10);
+    z-index: 50;
+    padding: 6px;
+    display: none;
+  }
+  .country-menu.open { display: block; }
+  .country-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: background .12s;
+  }
+  .country-option:hover { background: var(--surface); }
+  .country-option.selected {
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+    color: var(--primary);
+    font-weight: 600;
+  }
+  .country-option .flag {
+    width: 20px; height: 14px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex: 0 0 20px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+  }
+  .country-option .flag svg { display: block; width: 100%; height: 100%; }
+  .country-option .name { flex: 1; }
+  .country-option .dial { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .country-option.selected .dial { color: var(--primary); }
+
+  /* Custom select (Title dropdown) */
+  .custom-select { position: relative; }
+  .custom-select-trigger {
+    width: 100%;
+    height: 44px;
+    padding: 0 38px 0 var(--space-md);
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, box-shadow .15s;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .custom-select-trigger:hover { border-color: #B8BFCC; }
+  .custom-select-trigger:focus,
+  .custom-select-trigger[aria-expanded="true"] {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+  .custom-select-trigger.placeholder { color: var(--text-muted); }
+  .custom-select-trigger .caret {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 8px;
+    color: var(--text-muted);
+    transition: transform .15s, color .15s;
+    pointer-events: none;
+  }
+  .custom-select-trigger[aria-expanded="true"] .caret {
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--primary);
+  }
+  .custom-select-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow:
+      0 4px 12px rgba(12, 28, 60, 0.08),
+      0 12px 32px rgba(12, 28, 60, 0.10);
+    z-index: 50;
+    padding: 6px;
+    display: none;
+  }
+  .custom-select-menu.open { display: block; }
+  .custom-select-group {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 10px 4px;
+  }
+  .custom-select-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: background .12s;
+  }
+  .custom-select-option:hover { background: var(--surface); }
+  .custom-select-option.selected {
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+    color: var(--primary);
+    font-weight: 600;
+  }
+  .custom-select-option .check {
+    width: 14px; height: 14px;
+    color: var(--primary);
+    opacity: 0;
+    flex: 0 0 14px;
+  }
+  .custom-select-option.selected .check { opacity: 1; }
+
+  /* Scrollbars inside menus */
+  .country-menu::-webkit-scrollbar,
+  .custom-select-menu::-webkit-scrollbar { width: 8px; }
+  .country-menu::-webkit-scrollbar-thumb,
+  .custom-select-menu::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-full);
+  }
+  .country-menu::-webkit-scrollbar-thumb:hover,
+  .custom-select-menu::-webkit-scrollbar-thumb:hover {
+    background: #B8BFCC;
+  }
+
+  /* URL prefix input */
+  .input-prefix {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    overflow: hidden;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .input-prefix:hover { border-color: #B8BFCC; }
+  .input-prefix:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+  .input-prefix .prefix {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--space-md);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 14px;
+    border-right: 1px solid var(--border);
+    user-select: none;
+  }
+  .input-prefix input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    height: 42px;
+    padding: 0 var(--space-md);
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+  }
+  .input-prefix input::placeholder { color: var(--text-muted); }
+
+  /* Radio group */
+  .radio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+  }
+  .radio-tile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .radio-tile:hover { border-color: #B8BFCC; background: var(--surface); }
+  .radio-tile input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .radio-tile .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    flex: 0 0 16px;
+    display: grid;
+    place-items: center;
+    transition: border-color .15s, background .15s;
+  }
+  .radio-tile .dot::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: #fff;
+    transform: scale(0);
+    transition: transform .15s;
+  }
+  .radio-tile input:checked ~ .dot {
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+  .radio-tile input:checked ~ .dot::after { transform: scale(1); }
+  .radio-tile:has(input:checked) {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 6%, var(--bg));
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+
+  /* Submit */
+  .submit-row { margin-top: var(--space-xl); }
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    height: 50px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  .submit-btn:hover { background: var(--primary-hover); }
+  .submit-btn:active { transform: translateY(1px); }
+  .submit-btn svg { width: 16px; height: 16px; }
+
+  .privacy-note {
+    margin-top: var(--space-md);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .privacy-note a { color: var(--primary); text-decoration: none; }
+  .privacy-note a:hover { text-decoration: underline; }
+
+  /* --------------------------------------------------------------
+     Footer / trust bar (logo strip)
+  -------------------------------------------------------------- */
+  .trust-bar {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    padding: var(--space-2xl) 0;
+  }
+  .trust-bar-title {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-lg);
+  }
+  .logo-strip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4xl);
+    flex-wrap: wrap;
+    color: var(--text-muted);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    opacity: 0.72;
+  }
+  .logo-strip span { white-space: nowrap; }
+</style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#"><img src="assets/gocomet-logo.svg" alt="GoComet" /></a>
+      <a href="#form" class="nav-cta">Book a Demo</a>
+    </div>
+  </nav>
+
+  <!-- Contact section -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- LEFT: copy + trust -->
+        <div>
+          <span class="contact-eyebrow">Contact Us</span>
+          <h1 class="contact-title">
+            Let's move your supply chain <span class="accent">forward.</span>
+          </h1>
+          <p class="contact-lede">
+            Tell us a bit about your operation. A logistics specialist will reach out within one business day to walk you through how GoComet fits your network.
+          </p>
+
+          <ul class="contact-points">
+            <li>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.8 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>Personalised demo with a logistics expert, not a sales script.</span>
+            </li>
+            <li>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.8 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>Custom ROI estimate for your shipment volume and lanes.</span>
+            </li>
+            <li>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.8 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>See live tracking, procurement and invoice modules in action.</span>
+            </li>
+          </ul>
+
+          <div class="trust-block">
+            <div class="trust-label">Trusted Worldwide</div>
+            <div class="trust-stats">
+              <div class="trust-stat">
+                <div class="value">500+</div>
+                <div class="label">Enterprises</div>
+              </div>
+              <div class="trust-stat">
+                <div class="value">90+</div>
+                <div class="label">Countries</div>
+              </div>
+              <div class="trust-stat">
+                <div class="value">4.8/5</div>
+                <div class="label">G2 Rating</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: form -->
+        <div id="form" class="form-card">
+          <div class="form-header">
+            <h2>Get in touch</h2>
+            <p>Fill out the form and we'll be back within 24 hours.</p>
+          </div>
+
+          <form id="contactForm" onsubmit="event.preventDefault(); alert('Form submitted (demo).');">
+
+            <!-- Full Name -->
+            <div class="field">
+              <label class="field-label" for="fullName">Full Name <span class="req">*</span></label>
+              <input class="input" type="text" id="fullName" name="fullName" placeholder="Jane Doe" required />
+            </div>
+
+            <!-- Email -->
+            <div class="field">
+              <label class="field-label" for="email">Work Email <span class="req">*</span></label>
+              <input class="input" type="email" id="email" name="email" placeholder="jane@company.com" required />
+            </div>
+
+            <!-- Phone -->
+            <div class="field">
+              <label class="field-label" for="phone">Phone Number <span class="req">*</span></label>
+              <div class="phone-group">
+                <button type="button" class="country-trigger" id="countryTrigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="flag" id="countryFlag"></span>
+                  <span class="code" id="countryCode">+91</span>
+                  <svg class="caret" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <input class="phone-input" type="tel" id="phone" name="phone" placeholder="98765 43210" required />
+                <input type="hidden" id="countryCodeValue" name="countryCode" value="+91" />
+                <div class="country-menu" id="countryMenu" role="listbox"></div>
+              </div>
+            </div>
+
+            <!-- Title / Role -->
+            <div class="field">
+              <label class="field-label" for="titleTrigger">Title <span class="req">*</span></label>
+              <div class="custom-select" id="titleSelect">
+                <button type="button" class="custom-select-trigger placeholder" id="titleTrigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span id="titleValue">Select your role</span>
+                  <svg class="caret" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <input type="hidden" name="titleCategory" id="titleCategoryValue" required />
+                <div class="custom-select-menu" id="titleMenu" role="listbox"></div>
+              </div>
+            </div>
+
+            <!-- Website -->
+            <div class="field">
+              <label class="field-label" for="website">Company Website <span class="req">*</span></label>
+              <div class="input-prefix">
+                <span class="prefix">https://</span>
+                <input type="text" id="website" name="website" placeholder="yourcompany.com" required />
+              </div>
+            </div>
+
+            <!-- Shipments radio -->
+            <div class="field">
+              <label class="field-label">No. of Shipments / Containers per month <span class="req">*</span></label>
+              <div class="radio-grid">
+                <label class="radio-tile">
+                  <input type="radio" name="volume" value="0-500" required />
+                  <span class="dot"></span>
+                  <span>0 – 500</span>
+                </label>
+                <label class="radio-tile">
+                  <input type="radio" name="volume" value="500-1000" />
+                  <span class="dot"></span>
+                  <span>500 – 1,000</span>
+                </label>
+                <label class="radio-tile">
+                  <input type="radio" name="volume" value="1000-5000" />
+                  <span class="dot"></span>
+                  <span>1,000 – 5,000</span>
+                </label>
+                <label class="radio-tile">
+                  <input type="radio" name="volume" value="5000+" />
+                  <span class="dot"></span>
+                  <span>5,000+</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-row">
+              <button class="submit-btn" type="submit">
+                Schedule a Demo
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <p class="privacy-note">
+                By submitting, you agree to our <a href="#">Privacy Policy</a> and <a href="#">Terms</a>.
+              </p>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust strip -->
+  <div class="trust-bar">
+    <div class="container">
+      <div class="trust-bar-title">Trusted by industry leaders</div>
+      <div class="logo-strip">
+        <span>Unilever</span>
+        <span>General Mills</span>
+        <span>Godrej</span>
+        <span>TATA Motors</span>
+        <span>Honda</span>
+        <span>Borosil</span>
+        <span>Yokohama</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- Country flags (compact inline SVG) ----
+    const flagIN = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="4.66" fill="#FF9933"/><rect y="4.66" width="20" height="4.66" fill="#FFFFFF"/><rect y="9.34" width="20" height="4.66" fill="#138808"/><circle cx="10" cy="7" r="1.4" fill="none" stroke="#000080" stroke-width="0.4"/></svg>`;
+    const flagUS = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#B22234"/><g fill="#FFFFFF"><rect y="1.08" width="20" height="1.08"/><rect y="3.23" width="20" height="1.08"/><rect y="5.38" width="20" height="1.08"/><rect y="7.54" width="20" height="1.08"/><rect y="9.69" width="20" height="1.08"/><rect y="11.85" width="20" height="1.08"/></g><rect width="8" height="7.54" fill="#3C3B6E"/></svg>`;
+    const flagUK = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#012169"/><path d="M0 0 L20 14 M20 0 L0 14" stroke="#FFFFFF" stroke-width="2.8"/><path d="M0 0 L20 14 M20 0 L0 14" stroke="#C8102E" stroke-width="1.4"/><path d="M10 0 V14 M0 7 H20" stroke="#FFFFFF" stroke-width="4.6"/><path d="M10 0 V14 M0 7 H20" stroke="#C8102E" stroke-width="2.8"/></svg>`;
+    const flagSG = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="7" fill="#ED2939"/><rect y="7" width="20" height="7" fill="#FFFFFF"/><circle cx="5" cy="3.5" r="2" fill="#FFFFFF"/><circle cx="5.7" cy="3.5" r="2" fill="#ED2939"/></svg>`;
+    const flagAE = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="4.66" fill="#00732F"/><rect y="4.66" width="20" height="4.66" fill="#FFFFFF"/><rect y="9.34" width="20" height="4.66" fill="#000000"/><rect width="5.5" height="14" fill="#FF0000"/></svg>`;
+    const flagAU = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#012169"/><rect width="10" height="7" fill="#012169"/><path d="M0 0 L10 7 M10 0 L0 7" stroke="#FFFFFF" stroke-width="1.4"/><path d="M5 0 V7 M0 3.5 H10" stroke="#FFFFFF" stroke-width="2.3"/><path d="M5 0 V7 M0 3.5 H10" stroke="#C8102E" stroke-width="1.4"/><circle cx="15" cy="9" r="0.8" fill="#FFFFFF"/><circle cx="17" cy="11" r="0.6" fill="#FFFFFF"/><circle cx="13" cy="11.5" r="0.6" fill="#FFFFFF"/></svg>`;
+    const flagDE = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="4.66" fill="#000000"/><rect y="4.66" width="20" height="4.66" fill="#DD0000"/><rect y="9.34" width="20" height="4.66" fill="#FFCC00"/></svg>`;
+    const flagJP = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#FFFFFF"/><circle cx="10" cy="7" r="4.2" fill="#BC002D"/></svg>`;
+    const flagFR = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="6.67" height="14" fill="#0055A4"/><rect x="6.67" width="6.67" height="14" fill="#FFFFFF"/><rect x="13.33" width="6.67" height="14" fill="#EF4135"/></svg>`;
+    const flagCA = `<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#FFFFFF"/><rect width="5" height="14" fill="#FF0000"/><rect x="15" width="5" height="14" fill="#FF0000"/><path d="M10 4 L10.8 6 L12.8 5.6 L11.6 7.2 L12.8 8.8 L10.8 8.4 L10 10.4 L9.2 8.4 L7.2 8.8 L8.4 7.2 L7.2 5.6 L9.2 6 Z" fill="#FF0000"/></svg>`;
+
+    const countries = [
+      { code: "+91",  name: "India",            flag: flagIN, iso: "IN" },
+      { code: "+1",   name: "United States",    flag: flagUS, iso: "US" },
+      { code: "+44",  name: "United Kingdom",   flag: flagUK, iso: "UK" },
+      { code: "+65",  name: "Singapore",        flag: flagSG, iso: "SG" },
+      { code: "+971", name: "United Arab Emirates", flag: flagAE, iso: "AE" },
+      { code: "+61",  name: "Australia",        flag: flagAU, iso: "AU" },
+      { code: "+49",  name: "Germany",          flag: flagDE, iso: "DE" },
+      { code: "+81",  name: "Japan",            flag: flagJP, iso: "JP" },
+      { code: "+33",  name: "France",           flag: flagFR, iso: "FR" },
+      { code: "+1",   name: "Canada",           flag: flagCA, iso: "CA" },
+    ];
+
+    // ---- Country picker wiring ----
+    const countryTrigger = document.getElementById("countryTrigger");
+    const countryMenu = document.getElementById("countryMenu");
+    const countryFlag = document.getElementById("countryFlag");
+    const countryCodeLabel = document.getElementById("countryCode");
+    const countryCodeValue = document.getElementById("countryCodeValue");
+
+    let selectedCountry = countries[0];
+
+    function renderCountryFlag() {
+      countryFlag.innerHTML = selectedCountry.flag;
+      countryCodeLabel.textContent = selectedCountry.code;
+      countryCodeValue.value = selectedCountry.code;
+    }
+
+    function buildCountryMenu() {
+      countryMenu.innerHTML = countries.map((c, i) => `
+        <div class="country-option ${c.iso === selectedCountry.iso ? 'selected' : ''}" data-index="${i}" role="option">
+          <span class="flag">${c.flag}</span>
+          <span class="name">${c.name}</span>
+          <span class="dial">${c.code}</span>
+        </div>
+      `).join("");
+      countryMenu.querySelectorAll(".country-option").forEach(opt => {
+        opt.addEventListener("click", () => {
+          selectedCountry = countries[parseInt(opt.dataset.index)];
+          renderCountryFlag();
+          closeCountryMenu();
+        });
+      });
+    }
+
+    function openCountryMenu() {
+      buildCountryMenu();
+      countryMenu.classList.add("open");
+      countryTrigger.setAttribute("aria-expanded", "true");
+    }
+    function closeCountryMenu() {
+      countryMenu.classList.remove("open");
+      countryTrigger.setAttribute("aria-expanded", "false");
+    }
+    countryTrigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      countryMenu.classList.contains("open") ? closeCountryMenu() : openCountryMenu();
+    });
+
+    renderCountryFlag();
+
+    // ---- Title custom select ----
+    const titleOptions = [
+      { group: "Leadership", items: [
+        "C-Suite / Founder",
+        "VP — Supply Chain",
+        "VP — Logistics",
+        "VP — Procurement",
+        "Director — Supply Chain",
+        "Director — Logistics",
+        "Director — Procurement",
+      ]},
+      { group: "Operations", items: [
+        "Manager — Supply Chain",
+        "Manager — Logistics",
+        "Manager — Procurement",
+        "Analyst / Specialist",
+      ]},
+      { group: "Other Functions", items: [
+        "IT / Technology",
+        "Finance",
+        "Other",
+      ]},
+    ];
+
+    const titleTrigger = document.getElementById("titleTrigger");
+    const titleMenu = document.getElementById("titleMenu");
+    const titleValue = document.getElementById("titleValue");
+    const titleCategoryValue = document.getElementById("titleCategoryValue");
+
+    function buildTitleMenu() {
+      const html = titleOptions.map(group => {
+        const items = group.items.map(item => `
+          <div class="custom-select-option ${item === titleCategoryValue.value ? 'selected' : ''}" data-value="${item}" role="option">
+            <span>${item}</span>
+            <svg class="check" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7.5L5.5 11L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        `).join("");
+        return `<div class="custom-select-group">${group.group}</div>${items}`;
+      }).join("");
+      titleMenu.innerHTML = html;
+      titleMenu.querySelectorAll(".custom-select-option").forEach(opt => {
+        opt.addEventListener("click", () => {
+          const value = opt.dataset.value;
+          titleCategoryValue.value = value;
+          titleValue.textContent = value;
+          titleTrigger.classList.remove("placeholder");
+          closeTitleMenu();
+        });
+      });
+    }
+
+    function openTitleMenu() {
+      buildTitleMenu();
+      titleMenu.classList.add("open");
+      titleTrigger.setAttribute("aria-expanded", "true");
+    }
+    function closeTitleMenu() {
+      titleMenu.classList.remove("open");
+      titleTrigger.setAttribute("aria-expanded", "false");
+    }
+    titleTrigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      titleMenu.classList.contains("open") ? closeTitleMenu() : openTitleMenu();
+    });
+
+    // ---- Close dropdowns on outside click / escape ----
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest("#countryTrigger") && !e.target.closest("#countryMenu")) closeCountryMenu();
+      if (!e.target.closest("#titleTrigger") && !e.target.closest("#titleMenu")) closeTitleMenu();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { closeCountryMenu(); closeTitleMenu(); }
+    });
+  </script>
+
+</body>
+</html>
