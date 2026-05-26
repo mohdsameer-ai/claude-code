@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VEX — Shaping tomorrow with vision and action.</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<!-- Three.js as ES module -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* NOTE: do NOT set overflow-x or overflow here — it breaks position:sticky
+       on every descendant. The hero wrapper has its own overflow:hidden for
+       clipping the off-center globe. */
+  }
+
+  .liquid-glass {
+    background: rgba(0, 0, 0, 0.4);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: none;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 20%,
+      rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+      rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.3) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .hero-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateX(-18px);
+    transition: opacity 500ms ease, transform 500ms ease;
+    will-change: opacity, transform;
+  }
+  .hero-char.in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .fade-in {
+    opacity: 0;
+    transition: opacity 1000ms ease;
+  }
+  .fade-in.in {
+    opacity: 1;
+  }
+
+  /* ----- Custom cursor ----- */
+  /* Hide native cursor everywhere (including on buttons/links) so our custom
+     cursor is the only one visible. */
+  html, body, button, a, .timeline-card { cursor: none; }
+
+  .cursor-dot, .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 9999px;
+    opacity: 0;                    /* start hidden — first mousemove fades in */
+    transition: opacity 200ms ease;
+    /* translate3d is set inline in JS via transform; the rule below provides
+       a smoother feel on devices where transform interpolation is throttled */
+    will-change: transform;
+  }
+  .cursor-dot {
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    margin: -3px 0 0 -3px;       /* center on coords */
+  }
+  .cursor-ring {
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid #0054ff;
+    margin: -18px 0 0 -18px;     /* center on coords */
+    background: transparent;
+  }
+  /* Hide both when over touch devices (no hover/cursor) */
+  @media (hover: none) {
+    html, body, button, a, .timeline-card { cursor: auto; }
+    .cursor-dot, .cursor-ring { display: none; }
+  }
+
+  /* ----- Hero background: #0a0a0a + grid + intersection dots ----- */
+  .hero-bg {
+    background-color: #0a0a0a;
+    position: relative;
+  }
+  /* ----- Customer logos (muted monochrome on dark background) -----
+     Filter strategy: brightness(0) crushes all color to black, then invert(1)
+     flips to pure white, then opacity dims to muted gray. This handles any
+     source SVG palette uniformly without per-logo CSS. */
+  .customer-logo {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.55;
+    transition: opacity 250ms ease;
+  }
+  .customer-logo:hover {
+    opacity: 0.9;
+  }
+
+  /* ----- Section 2 logo grid (full-bleed, hero-style lines + dots) -----
+     The grid spans the full viewport width edge-to-edge. The line look matches
+     the hero: 1px white lines at low opacity, with a small white dot at every
+     intersection (rendered as a radial-gradient layer on the grid container). */
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.07);     /* line color, shows through 1px gaps */
+    border-top:    1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+    position: relative;
+  }
+  /* Intersection dots — small white dots at the corners of each cell.
+     Two layers stacked: one for the top edge, one for the bottom edge. */
+  .logo-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.35) 1.4px, transparent 1.8px),
+      radial-gradient(circle, rgba(255,255,255,0.35) 1.4px, transparent 1.8px);
+    background-repeat: repeat-x, repeat-x;
+    background-size: 12.5% 3px, 12.5% 3px;
+    background-position: 0 0, 0 100%;
+  }
+  @media (min-width: 1024px) {
+    .logo-grid { grid-template-columns: repeat(8, 1fr); }
+    .logo-grid::after {
+      background-size: 12.5% 3px, 12.5% 3px;
+    }
+  }
+  @media (max-width: 1023px) and (min-width: 640px) {
+    .logo-grid::after {
+      background-size: 25% 3px, 25% 3px;
+    }
+  }
+  @media (max-width: 639px) {
+    .logo-grid { grid-template-columns: repeat(2, 1fr); }
+    .logo-grid::after {
+      background-size: 50% 3px, 50% 3px;
+    }
+  }
+  .logo-cell {
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    padding: 24px;
+  }
+  @media (min-width: 1024px) {
+    .logo-cell { aspect-ratio: auto; height: 120px; }
+  }
+  /* Logos sit at ~75% of cell — 25% smaller than the full-cell sizing */
+  .logo-cell .customer-logo {
+    max-height: 60%;
+    max-width: 75%;
+  }
+
+  /* Grid + dot pattern lives on a pseudo-element so we can independently mask
+     it (fade out on the right) without affecting the solid base color. */
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      /* Dots — small white circle at the top-left corner of each tile */
+      radial-gradient(circle at 0 0, rgba(255,255,255,0.35) 1.2px, transparent 1.6px),
+      /* Vertical grid lines */
+      linear-gradient(to right,  rgba(255,255,255,0.07) 1px, transparent 1px),
+      /* Horizontal grid lines */
+      linear-gradient(to bottom, rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 60px 60px;
+    background-position: 0 0, 0 0, 0 0;
+    /* Fade the grid out toward the right well before the globe area starts.
+       Full opacity only on the left ~25%, fully gone by 55%. */
+    -webkit-mask-image: linear-gradient(to right, black 0%, black 25%, transparent 55%);
+            mask-image: linear-gradient(to right, black 0%, black 25%, transparent 55%);
+  }
+
+  /* ----- Section 3: feature cards ----- */
+  .feature-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 360px;
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 300ms ease;
+    /* Promote the card itself to its own compositor layer so its hover state
+       changes don't repaint sibling cards or the page below. */
+    transform: translateZ(0);
+    isolation: isolate;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("odyssey-theme-bg.png") center / cover no-repeat;
+    opacity: 0;
+    transition: opacity 500ms ease;
+    z-index: -1;
+    pointer-events: none;
+    /* Force the image onto its own GPU layer so hover is a cheap opacity flip
+       on an already-rasterized texture — no repainting the bitmap each frame. */
+    will-change: opacity;
+    transform: translateZ(0);
+  }
+  .feature-card:hover::before {
+    opacity: 1;
+  }
+  .feature-card:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .card-top {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* Heading swap: each heading-line is split into per-character spans on load.
+     On card hover, outgoing chars fade+slide out left, incoming chars fade+slide in.
+     Each char has its own staggered transition-delay set in JS. */
+  .card-heading {
+    position: relative;
+    min-height: 64px;
+    margin-bottom: 10px;
+  }
+  .heading-line {
+    position: absolute;
+    inset: 0;
+    font-size: 26px;
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    pointer-events: none;
+  }
+  /* Default: .is-active line is visible (chars at rest), the other is hidden */
+  .heading-line:not(.is-active) {
+    opacity: 0;
+  }
+  .heading-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translate3d(-14px, 0, 0);
+    transition: opacity 200ms ease, transform 200ms ease;
+    will-change: opacity, transform;
+  }
+  /* Chars in the active line are at rest by default */
+  .heading-line.is-active .heading-char {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  /* On card hover: ACTIVE line's chars exit (fade out, slide left) */
+  .feature-card:hover .heading-line.is-active .heading-char {
+    opacity: 0;
+    transform: translate3d(-14px, 0, 0);
+  }
+  /* On card hover: INACTIVE line becomes visible, its chars enter */
+  .feature-card:hover .heading-line:not(.is-active) {
+    opacity: 1;
+  }
+  .feature-card:hover .heading-line:not(.is-active) .heading-char {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .card-body {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  /* Payoff box at the bottom of each card */
+  .card-payoff {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    margin-top: 16px;
+  }
+  .payoff-text {
+    flex: 1;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .payoff-label {
+    font-weight: 700;
+    color: #ffffff;
+    margin-right: 4px;
+  }
+  .payoff-arrow {
+    color: #ffffff;
+    flex-shrink: 0;
+    transition: transform 300ms ease;
+  }
+  .feature-card:hover .payoff-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Stack cards on mobile; allow natural height since 420px is tall on a phone */
+  @media (max-width: 1023px) {
+    .feature-card { height: auto; min-height: 380px; }
+  }
+
+  /* ----- Section 4: scroll-jacked horizontal showcase ----- */
+  /* Outer wrapper's height is set by JS to exactly match the horizontal
+     travel distance — 100vh (initial pin) + (trackWidth − viewportWidth).
+     CSS fallback height is given but JS overrides it on load/resize so
+     there's no trailing empty scroll after the last panel. */
+  .hscroll-outer {
+    position: relative;
+    height: 100vh;                                /* JS overrides on load */
+  }
+  .hscroll-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #0a0a0a;
+  }
+
+  /* Dot-grid background fills the pinned viewport */
+  .hscroll-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle,
+      rgba(255, 255, 255, 0.10) 1.2px, transparent 1.6px);
+    background-size: 28px 28px;
+    background-position: 0 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Nova workflow line — SVG-based, scroll-driven draw + pulse + traveling badge.
+     Positioned near the bottom of the viewport so product cards (which are
+     vertically centered) don't sit on top of the line. */
+  .workflow-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12%;                                  /* below the cards */
+    height: 50px;
+    pointer-events: none;
+    z-index: 3;                                   /* above cards so the line is fully visible */
+  }
+  .workflow-svg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 10px;
+    overflow: visible;
+  }
+  .workflow-draw {
+    /* Initial state: nothing drawn. JS sets dasharray per frame on scroll.
+       pathLength="900" on the element normalizes these values. */
+    stroke-dasharray: 0 900;
+    transition: none;
+  }
+  .workflow-pulse {
+    /* Position updated by JS via cx attribute */
+  }
+  .workflow-badge {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, calc(-100% - 14px));  /* sit above the line */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: rgba(0, 84, 255, 0.12);
+    border: 1px solid rgba(0, 84, 255, 0.5);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: #ffffff;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;                                   /* hidden until JS positions it */
+    transition: opacity 400ms ease;
+    will-change: transform, opacity;
+  }
+  .workflow-badge.is-active {
+    opacity: 1;
+  }
+  .badge-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    display: block;
+    /* A subtle breathing animation so the icon feels alive while the badge travels */
+    animation: badge-pulse 1.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(255, 140, 60, 0.55));
+  }
+  @keyframes badge-pulse {
+    0%, 100% { transform: scale(1);    opacity: 1;   }
+    50%      { transform: scale(1.15); opacity: 0.85; }
+  }
+
+  /* The horizontal track — display:flex, each panel is 100vw wide.
+     JS sets translateX to slide the whole track left as user scrolls. */
+  .hscroll-track {
+    position: relative;
+    z-index: 2;
+    height: 100vh;
+    display: flex;
+    will-change: transform;
+  }
+
+  .hscroll-panel {
+    flex: 0 0 70vw;                               /* tighter — less empty space between cards */
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2vw;
+  }
+  /* Intro and outro need a bit more room since their content is wider than a card */
+  .hscroll-intro,
+  .hscroll-outro {
+    flex: 0 0 85vw;
+    padding: 0 4vw;
+  }
+
+  /* ----- Intro panel ----- */
+  .hscroll-intro .intro-inner {
+    max-width: 880px;
+  }
+  /* H2 — smaller than the hero H1 to maintain hierarchy.
+     Hero is text-7xl on xl (~72px); this caps at ~48px. */
+  .section-heading {
+    font-size: clamp(28px, 4.5vw, 48px);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: #ffffff;
+  }
+  .section-subhead {
+    font-size: clamp(15px, 1.4vw, 18px);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 680px;
+    margin-bottom: 28px;
+  }
+  .scroll-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .scroll-hint svg {
+    transform: rotate(0deg);
+    opacity: 0.7;
+  }
+
+  /* ----- Product card ----- */
+  .product-card {
+    width: 100%;
+    max-width: 1080px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 40px;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+    transition: border-color 300ms ease, box-shadow 300ms ease, transform 300ms ease;
+    will-change: box-shadow, transform;
+  }
+  .product-card:hover {
+    border-color: rgba(0, 84, 255, 0.55);
+    transform: translateY(-3px);
+    /* Outer glow — layered shadows: tight inner halo + soft wide aura */
+    box-shadow:
+      0 0 0 1px rgba(0, 84, 255, 0.25),
+      0 0 24px rgba(0, 84, 255, 0.35),
+      0 0 60px rgba(0, 84, 255, 0.22),
+      0 20px 50px rgba(0, 0, 0, 0.4);
+  }
+  .product-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .product-step {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: rgba(0, 84, 255, 0.9);
+    margin-bottom: 14px;
+  }
+  .product-name {
+    font-size: clamp(28px, 3vw, 38px);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    color: #ffffff;
+  }
+  .product-cap {
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 20px;
+  }
+  .product-plug {
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 2px solid #0054ff;
+    border-radius: 4px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .plug-label {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+  .product-image {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+  }
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ----- Outro panel ----- */
+  .hscroll-outro .outro-inner {
+    max-width: 780px;
+    text-align: left;
+  }
+  .outro-text {
+    font-size: clamp(18px, 1.8vw, 24px);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+  .outro-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    color: #000000;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: none;                                /* respect custom cursor */
+    transition: background 200ms ease, transform 200ms ease;
+  }
+  .outro-cta:hover {
+    background: #e5e5e5;
+    transform: translateY(-1px);
+  }
+
+  /* Mobile fallback: no scroll-jack, just stack panels vertically with
+     natural scroll. The pin still works but each panel is shorter. */
+  @media (max-width: 767px) {
+    .hscroll-outer { height: auto; }
+    .hscroll-pin { position: static; height: auto; overflow: visible; }
+    .hscroll-track {
+      flex-direction: column;
+      height: auto;
+      transform: none !important;
+    }
+    .hscroll-panel {
+      flex: 0 0 auto;
+      width: 100%;
+      height: auto;
+      min-height: 80vh;
+      padding: 60px 24px;
+    }
+    .product-card {
+      grid-template-columns: 1fr;
+      padding: 24px;
+      gap: 24px;
+    }
+    .product-image { min-height: 220px; }
+    .workflow-line { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor: small white dot moves 1:1 with mouse; blue ring chases with delay -->
+<div class="cursor-dot"  id="cursor-dot"  aria-hidden="true"></div>
+<div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
+
+<div class="hero-bg relative w-full min-h-screen overflow-hidden">
+
+  <!-- Background globe: dotted, rotating, with supply chain arcs -->
+  <canvas id="globe-canvas" class="absolute inset-0 w-full h-full block"></canvas>
+
+  <!-- Content layer (pointer-events disabled on the wrapper so empty space passes drags through to globe; re-enabled on interactive children) -->
+  <div class="relative z-10 flex flex-col min-h-screen px-6 md:px-12 lg:px-16 pt-6 pointer-events-none">
+
+    <!-- Navbar -->
+    <nav class="liquid-glass rounded-xl px-4 py-2 flex items-center justify-between pointer-events-auto">
+      <div class="text-2xl font-semibold tracking-tight">gocomet</div>
+
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#" class="text-sm hover:text-gray-300 transition-colors">Products</a>
+        <a href="#" class="text-sm hover:text-gray-300 transition-colors">AI &amp; Agents</a>
+        <a href="#" class="text-sm hover:text-gray-300 transition-colors">Nova</a>
+        <a href="#" class="text-sm hover:text-gray-300 transition-colors">Customers</a>
+        <a href="#" class="text-sm hover:text-gray-300 transition-colors">Resources</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="#" class="hidden md:inline text-sm text-white/90 hover:text-white transition-colors">Sign in</a>
+        <button class="bg-white text-black px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">
+          Book a demo
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero content pinned to bottom -->
+    <div class="flex-1 flex flex-col justify-end pb-8 lg:pb-10 pt-24 md:pt-32">
+      <div class="max-w-5xl">
+
+        <!-- Left: eyebrow + heading + sub + buttons -->
+        <div>
+          <div
+            id="eyebrow"
+            class="fade-in text-xs md:text-sm font-medium text-gray-300 uppercase mb-4"
+            style="letter-spacing: 0.18em;"
+          >
+            AI-Native Adaptive Platform for Global Trade
+          </div>
+
+          <h1
+            id="heading"
+            class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-normal mb-4 max-w-4xl"
+            style="letter-spacing: -0.04em; line-height: 1.05;"
+          ></h1>
+
+          <p id="subheading" class="fade-in text-base md:text-lg text-gray-300 mb-5 max-w-2xl">
+            Your ops team is firefighting exceptions across disconnected tools, spreadsheets, and partners who never log in. We map your exact process, unite every partner into one connected workflow, and run it end to end. Adapted to you. Live in weeks.
+          </p>
+
+          <div id="buttons" class="fade-in flex flex-wrap gap-4 pointer-events-auto">
+            <button class="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+              See a process-fit demo
+            </button>
+            <button class="liquid-glass border border-white/20 text-white px-8 py-3 rounded-lg font-medium hover:bg-white hover:text-black transition-colors">
+              How Nova works
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Timeline: 5 image cards with arrows between, expand on hover -->
+    <div id="timeline" class="fade-in pb-10 lg:pb-12 pointer-events-auto">
+      <div class="flex items-stretch h-[140px] gap-3">
+
+        <!-- Card 1: PO origin -->
+        <div class="timeline-card group flex-[1] hover:flex-[3] transition-all duration-500 ease-in-out">
+          <div class="liquid-glass border border-white/15 rounded-xl h-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80" alt="PO origin" class="w-full h-full object-cover opacity-20 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="shrink-0 flex items-center justify-center text-white" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+            <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+          </svg>
+        </div>
+
+        <!-- Card 2: Country flags -->
+        <div class="timeline-card group flex-[1] hover:flex-[3] transition-all duration-500 ease-in-out">
+          <div class="liquid-glass border border-white/15 rounded-xl h-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?w=800&q=80" alt="Country flags" class="w-full h-full object-cover opacity-20 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="shrink-0 flex items-center justify-center text-white" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+            <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+          </svg>
+        </div>
+
+        <!-- Card 3: Port -->
+        <div class="timeline-card group flex-[1] hover:flex-[3] transition-all duration-500 ease-in-out">
+          <div class="liquid-glass border border-white/15 rounded-xl h-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1494412651409-8963ce7935a7?w=800&q=80" alt="Port" class="w-full h-full object-cover opacity-20 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="shrink-0 flex items-center justify-center text-white" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+            <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+          </svg>
+        </div>
+
+        <!-- Card 4: CHA -->
+        <div class="timeline-card group flex-[1] hover:flex-[3] transition-all duration-500 ease-in-out">
+          <div class="liquid-glass border border-white/15 rounded-xl h-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80" alt="CHA" class="w-full h-full object-cover opacity-20 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="shrink-0 flex items-center justify-center text-white" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+            <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+          </svg>
+        </div>
+
+        <!-- Card 5: Plant -->
+        <div class="timeline-card group flex-[1] hover:flex-[3] transition-all duration-500 ease-in-out">
+          <div class="liquid-glass border border-white/15 rounded-xl h-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80" alt="Plant" class="w-full h-full object-cover opacity-20 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION 2: Credibility band — stats strip + logo row
+     Thin band, dark theme matching hero. No CTA, no globe.
+     ============================================================ -->
+<section class="bg-[#0a0a0a] text-white border-t border-white/5">
+  <div class="px-6 md:px-12 lg:px-16 py-14 md:py-16 lg:py-20">
+
+    <!-- Stats strip: 4 large numbers, horizontal -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 lg:gap-x-10">
+
+      <div class="flex flex-col">
+        <div class="text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight" style="letter-spacing: -0.04em;">500+</div>
+        <div class="mt-2 text-xs md:text-sm text-gray-400 uppercase" style="letter-spacing: 0.14em;">Enterprise deployments</div>
+      </div>
+
+      <div class="flex flex-col">
+        <div class="text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight" style="letter-spacing: -0.04em;">$5B</div>
+        <div class="mt-2 text-xs md:text-sm text-gray-400 uppercase" style="letter-spacing: 0.14em;">In shipments</div>
+      </div>
+
+      <div class="flex flex-col">
+        <div class="text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight" style="letter-spacing: -0.04em;">2M+</div>
+        <div class="mt-2 text-xs md:text-sm text-gray-400 uppercase" style="letter-spacing: 0.14em;">Containers tracked</div>
+      </div>
+
+      <div class="flex flex-col">
+        <div class="text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight" style="letter-spacing: -0.04em;">15+</div>
+        <div class="mt-2 text-xs md:text-sm text-gray-400 uppercase" style="letter-spacing: 0.14em;">Countries per customer</div>
+      </div>
+
+    </div>
+
+    <!-- Divider -->
+    <div class="mt-14 md:mt-16 border-t border-white/10"></div>
+
+    <!-- Trusted-by label stays inside padded container -->
+    <div class="pt-10 md:pt-12">
+      <div class="text-xs md:text-sm text-gray-400 uppercase mb-8" style="letter-spacing: 0.18em;">
+        Trusted by 600+ global enterprise shippers
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Logo grid: full-bleed, edge-to-edge of the viewport -->
+  <div class="logo-grid">
+
+    <div class="logo-cell">
+      <img src="logos/unilever.svg" alt="Unilever" class="customer-logo" />
+    </div>
+
+    <div class="logo-cell">
+      <img src="logos/general-mills.svg" alt="General Mills" class="customer-logo" />
+    </div>
+
+    <div class="logo-cell">
+      <img src="logos/kelloggs.svg" alt="Kellogg's" class="customer-logo" />
+    </div>
+
+    <div class="logo-cell">
+      <img src="logos/colgate.svg" alt="Colgate" class="customer-logo" />
+    </div>
+
+    <div class="logo-cell">
+      <img src="logos/schneider-electric.svg" alt="Schneider Electric" class="customer-logo" />
+    </div>
+
+    <div class="logo-cell">
+      <img src="logos/honda.svg" alt="Honda" class="customer-logo" />
+    </div>
+
+    <div class="logo-cell">
+      <img src="logos/sony.svg" alt="Sony" class="customer-logo" />
+    </div>
+
+    <div class="logo-cell">
+      <img src="logos/ab-inbev.svg" alt="AB InBev" class="customer-logo" />
+    </div>
+
+  </div>
+
+  <!-- Add bottom padding inside the section so the grid has room before next section -->
+  <div class="h-10 md:h-12 lg:h-16"></div>
+</section>
+
+<!-- ============================================================
+     SECTION 3: Three feature cards — animated heading swap + payoff box
+     Fixed-height cards in a row, dark theme matching hero.
+     ============================================================ -->
+<section class="bg-[#0a0a0a] text-white border-t border-white/5">
+  <div class="px-6 md:px-12 lg:px-16 py-20 md:py-24 lg:py-28">
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Card 01 -->
+      <article class="feature-card">
+        <div class="card-top">
+          <!-- Animated heading: swaps on hover -->
+          <h3 class="card-heading">
+            <span class="heading-line is-active">Deep Cross Border Expertise</span>
+            <span class="heading-line">Cross-border, by data.</span>
+          </h3>
+
+          <p class="card-body">
+            $5B in shipments, 2M+ containers tracked, 5000+ port and freight forwarder relationships across international routes. Built on data domestic platforms do not have.
+          </p>
+        </div>
+
+        <div class="card-payoff">
+          <div class="payoff-text">
+            <span class="payoff-label">THE PAYOFF:</span>
+            accurate ETAs and earlier exception detection on international lanes from day one.
+          </div>
+          <div class="payoff-arrow" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 -960 960 960" fill="currentColor">
+              <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 02 -->
+      <article class="feature-card">
+        <div class="card-top">
+          <h3 class="card-heading">
+            <span class="heading-line is-active">Deep Customization</span>
+            <span class="heading-line">Configurable, as a product.</span>
+          </h3>
+
+          <p class="card-body">
+            Your as-is process is the product. Approvals, exceptions, document standards, off-platform partners. No template fitting.
+          </p>
+        </div>
+
+        <div class="card-payoff">
+          <div class="payoff-text">
+            <span class="payoff-label">THE PAYOFF:</span>
+            your team stops bending the process to fit a tool, and adoption is no longer the project risk.
+          </div>
+          <div class="payoff-arrow" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 -960 960 960" fill="currentColor">
+              <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 03 -->
+      <article class="feature-card">
+        <div class="card-top">
+          <h3 class="card-heading">
+            <span class="heading-line is-active">Live in Weeks, by architecture.</span>
+            <span class="heading-line">Deployment in weeks, by design.</span>
+          </h3>
+
+          <p class="card-body">
+            Powered by Nova — AI first implementation architecture. Live in six weeks. By design, not by hustle.
+          </p>
+        </div>
+
+        <div class="card-payoff">
+          <div class="payoff-text">
+            <span class="payoff-label">THE PAYOFF:</span>
+            OTIF and landed cost improvements start compounding in week 7, not month 19.
+          </div>
+          <div class="payoff-arrow" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 -960 960 960" fill="currentColor">
+              <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4: Scroll-jacked horizontal product showcase.
+     Outer wrapper has a tall height that drives the scroll distance.
+     Inner sticky element is 100vh and holds the horizontal track.
+     As the user scrolls vertically, JS translates the track to the left,
+     turning vertical scroll into horizontal traversal across the cards.
+     ============================================================ -->
+<section class="bg-[#0a0a0a] text-white border-t border-white/5">
+  <div class="hscroll-outer" id="products-outer">
+    <div class="hscroll-pin">
+
+      <!-- Dot-grid background fills the entire pinned viewport -->
+      <div class="hscroll-bg" aria-hidden="true"></div>
+
+      <!-- Nova workflow line — animated SVG (base track + scroll-synced draw + pulse + badge) -->
+      <div class="workflow-line" aria-hidden="true">
+        <svg class="workflow-svg" preserveAspectRatio="none" viewBox="0 0 1000 10">
+          <defs>
+            <!-- Glow filter for the pulse -->
+            <filter id="pulse-glow" x="-50%" y="-200%" width="200%" height="500%">
+              <feGaussianBlur stdDeviation="1.6" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Base track (faint, full inset width) -->
+          <line class="workflow-base" x1="50" y1="5" x2="950" y2="5"
+                stroke="rgba(255,255,255,0.10)" stroke-width="1"
+                stroke-dasharray="4 6"/>
+          <!-- Drawn overlay — SOLID blue, revealed by JS via stroke-dasharray on scroll.
+               pathLength="900" normalizes the dash math so it works predictably
+               regardless of how preserveAspectRatio="none" stretches the SVG. -->
+          <line class="workflow-draw" x1="50" y1="5" x2="950" y2="5"
+                pathLength="900"
+                stroke="#0054ff" stroke-width="2.5"
+                stroke-linecap="round"/>
+          <!-- Pulse circle: a small bright dot at the draw front -->
+          <circle class="workflow-pulse" cx="50" cy="5" r="3"
+                  fill="#ffffff" filter="url(#pulse-glow)"/>
+        </svg>
+        <!-- Nova badge: a small pill that drifts along with the pulse -->
+        <div class="workflow-badge">
+          <img class="badge-icon" src="nova-icon.png" alt="" aria-hidden="true" />
+          NOVA
+        </div>
+      </div>
+
+      <!-- The horizontal track — translated by JS based on scroll progress -->
+      <div class="hscroll-track" id="products-track">
+
+        <!-- Panel 1: Heading + subhead -->
+        <section class="hscroll-panel hscroll-intro">
+          <div class="intro-inner">
+            <h2 class="section-heading">
+              The workflow is the product.<br/>These are the engines that power it.
+            </h2>
+            <p class="section-subhead">
+              Five deep domain products, built over a decade of running global trade. Your workflow decides which products plug in, where, and how. No off-the-shelf module. No forced standardization.
+            </p>
+            <div class="scroll-hint" aria-hidden="true">
+              <span>Scroll to explore</span>
+              <svg width="20" height="20" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 2: GoOrder -->
+        <section class="hscroll-panel">
+          <article class="product-card">
+            <div class="product-text">
+              <div class="product-step">01</div>
+              <h3 class="product-name">GoOrder</h3>
+              <p class="product-cap">
+                PO ingestion and order management with full context: criticality, plant destination, supplier history.
+              </p>
+              <div class="product-plug">
+                <span class="plug-label">Plugs in at:</span>
+                Workflow start. Drives every downstream decision.
+              </div>
+            </div>
+            <div class="product-image">
+              <img src="product-placeholder.png" alt="GoOrder interface" />
+            </div>
+          </article>
+        </section>
+
+        <!-- Panel 3: GoProcure -->
+        <section class="hscroll-panel">
+          <article class="product-card">
+            <div class="product-text">
+              <div class="product-step">02</div>
+              <h3 class="product-name">GoProcure</h3>
+              <p class="product-cap">
+                Carrier selection and rate intelligence. Live rate comparison across freight forwarders, contract enforcement, spot negotiation.
+              </p>
+              <div class="product-plug">
+                <span class="plug-label">Plugs in at:</span>
+                Carrier approval. Makes every routing decision data-driven.
+              </div>
+            </div>
+            <div class="product-image">
+              <img src="product-placeholder.png" alt="GoProcure interface" />
+            </div>
+          </article>
+        </section>
+
+        <!-- Panel 4: GoTrack -->
+        <section class="hscroll-panel">
+          <article class="product-card">
+            <div class="product-text">
+              <div class="product-step">03</div>
+              <h3 class="product-name">GoTrack</h3>
+              <p class="product-cap">
+                Multi-modal, multi-leg shipment tracking. Real-time ETA, exception detection, port and carrier data.
+              </p>
+              <div class="product-plug">
+                <span class="plug-label">Plugs in at:</span>
+                Booking. Stays live through goods receipt.
+              </div>
+            </div>
+            <div class="product-image">
+              <img src="product-placeholder.png" alt="GoTrack interface" />
+            </div>
+          </article>
+        </section>
+
+        <!-- Panel 5: GoShipment -->
+        <section class="hscroll-panel">
+          <article class="product-card">
+            <div class="product-text">
+              <div class="product-step">04</div>
+              <h3 class="product-name">GoShipment</h3>
+              <p class="product-cap">
+                End-to-end shipment execution. Booking, document collection, dispatch coordination, last-mile orchestration.
+              </p>
+              <div class="product-plug">
+                <span class="plug-label">Plugs in at:</span>
+                Booking through delivery. The execution backbone.
+              </div>
+            </div>
+            <div class="product-image">
+              <img src="product-placeholder.png" alt="GoShipment interface" />
+            </div>
+          </article>
+        </section>
+
+        <!-- Panel 6: GoInvoice -->
+        <section class="hscroll-panel">
+          <article class="product-card">
+            <div class="product-text">
+              <div class="product-step">05</div>
+              <h3 class="product-name">GoInvoice</h3>
+              <p class="product-cap">
+                Invoice reconciliation and variance management. Three-way match across PO, shipment, and contract.
+              </p>
+              <div class="product-plug">
+                <span class="plug-label">Plugs in at:</span>
+                Finance approval. Closes the loop.
+              </div>
+            </div>
+            <div class="product-image">
+              <img src="product-placeholder.png" alt="GoInvoice interface" />
+            </div>
+          </article>
+        </section>
+
+        <!-- Panel 7: Closing transition + CTA -->
+        <section class="hscroll-panel hscroll-outro">
+          <div class="outro-inner">
+            <p class="outro-text">
+              Each product is deep enough to stand on its own. Bound together by Nova and adapted to your workflow, they run your trade operation end to end.
+            </p>
+            <button class="outro-cta">
+              Explore the product portfolio
+              <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="m480-334 146-146-146-146-42 42 74 74H330v60h182l-74 74 42 42Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // AnimatedHeading: split on \n into lines, then characters with staggered delay
+  (function () {
+    const heading = document.getElementById('heading');
+    const text = "Built for the complexity\nof cross-border trade.";
+    const lines = text.split('\n');
+    const charDelay = 30;       // ms per char
+    const initialDelay = 200;   // ms before animation begins
+
+    lines.forEach((line, lineIndex) => {
+      const lineEl = document.createElement('div');
+      lineEl.style.display = 'block';
+
+      const lineLength = line.length;
+
+      for (let charIndex = 0; charIndex < line.length; charIndex++) {
+        const ch = line[charIndex];
+        const span = document.createElement('span');
+        span.className = 'hero-char';
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+
+        const delay = (lineIndex * lineLength * charDelay) + (charIndex * charDelay);
+        span.style.transitionDelay = delay + 'ms';
+
+        lineEl.appendChild(span);
+      }
+
+      heading.appendChild(lineEl);
+    });
+
+    // Trigger entrance
+    setTimeout(() => {
+      document.querySelectorAll('.hero-char').forEach(el => el.classList.add('in'));
+    }, initialDelay);
+  })();
+
+  // FadeIn elements with configurable delay
+  function fadeIn(id, delay) {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('in');
+    }, delay);
+  }
+
+  fadeIn('eyebrow', 0);
+  fadeIn('subheading', 800);
+  fadeIn('buttons', 1200);
+  fadeIn('timeline', 1400);
+
+  // ---------- Section 3: split card headings into per-character spans ----------
+  // For each .heading-line, replace its text with a sequence of <span class="heading-char">
+  // elements, each with a staggered transition-delay. This makes the hover swap
+  // animate word-by-word / char-by-char like the hero heading on page load.
+  (function () {
+    const CHAR_DELAY = 12;     // ms between consecutive chars
+    const lines = document.querySelectorAll('.heading-line');
+    lines.forEach((line) => {
+      const text = line.textContent;
+      line.textContent = '';
+      const chars = text.split('');
+      chars.forEach((ch, i) => {
+        const span = document.createElement('span');
+        span.className = 'heading-char';
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        span.style.transitionDelay = (i * CHAR_DELAY) + 'ms';
+        line.appendChild(span);
+      });
+    });
+  })();
+
+  // ---------- Section 4: scroll-jacked horizontal lane ----------
+  (function () {
+    const outer = document.getElementById('products-outer');
+    const track = document.getElementById('products-track');
+    if (!outer || !track) return;
+
+    // Nova workflow line elements
+    const drawLine = document.querySelector('.workflow-draw');
+    const pulse    = document.querySelector('.workflow-pulse');
+    const badge    = document.querySelector('.workflow-badge');
+
+    const mobileQuery = window.matchMedia('(max-width: 767px)');
+    let enabled = !mobileQuery.matches;
+    mobileQuery.addEventListener('change', (e) => {
+      enabled = !e.matches;
+      if (!enabled) {
+        track.style.transform = '';
+        if (badge) badge.classList.remove('is-active');
+      }
+      recompute();
+    });
+
+    let maxShift = 0;
+    function recompute() {
+      maxShift = Math.max(0, track.scrollWidth - window.innerWidth);
+      if (enabled) {
+        outer.style.height = (window.innerHeight + maxShift) + 'px';
+      } else {
+        outer.style.height = '';
+      }
+    }
+    recompute();
+    window.addEventListener('resize', recompute);
+    window.addEventListener('load', recompute);
+
+    // Cached viewport width for the Nova badge position calc
+    function updateNovaLine(progress) {
+      if (!drawLine || !pulse || !badge) return;
+
+      // The drawn line has pathLength="900", so its stroke-dasharray operates
+      // in normalized 0-900 units regardless of the SVG's stretched render width.
+      // dasharray "X 900" reveals first X units, hides the rest.
+      const LINE_START = 50;       // viewBox x where line begins
+      const LINE_LENGTH = 900;
+      // Slight lead (30 units ≈ 3% of line) so the trail is always slightly
+      // ahead of the cards the user is currently looking at.
+      const drawnLength = Math.min(LINE_LENGTH, progress * LINE_LENGTH + 30);
+
+      drawLine.setAttribute('stroke-dasharray', drawnLength + ' ' + (LINE_LENGTH - drawnLength + 0.001));
+
+      // Pulse rides at the draw front (in viewBox coordinates)
+      const pulseX = LINE_START + drawnLength;
+      pulse.setAttribute('cx', pulseX);
+
+      // Badge position — convert viewBox X (0–1000) to CSS pixels
+      const badgeX = (pulseX / 1000) * window.innerWidth;
+      badge.style.transform =
+        `translate(${badgeX}px, calc(-100% - 14px)) translateX(-50%)`;
+
+      // Fade badge in once we've started scrolling, out as we approach the end
+      const showBadge = progress > 0.02 && progress < 0.98;
+      badge.classList.toggle('is-active', showBadge);
+    }
+
+    let rafScheduled = false;
+    function onScroll() {
+      if (rafScheduled) return;
+      rafScheduled = true;
+      requestAnimationFrame(() => {
+        rafScheduled = false;
+        if (!enabled) return;
+
+        const rect = outer.getBoundingClientRect();
+        const total = outer.offsetHeight - window.innerHeight;
+        const progress = Math.max(0, Math.min(1, -rect.top / total));
+        const shift = progress * maxShift;
+        track.style.transform = `translate3d(${-shift}px, 0, 0)`;
+
+        updateNovaLine(progress);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+
+<!-- Globe: dotted, rotating, supply chain arcs (Three.js) -->
+<script type="module">
+import * as THREE from 'three';
+
+const canvas = document.getElementById('globe-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// alpha:true + setClearColor with alpha 0 means transparent canvas, so the
+// CSS background of the parent div shows through behind the globe.
+renderer.setClearColor(0x000000, 0);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 0, 5.2);
+
+// Globe group declared early so resize() can position it on first call
+const globeGroup = new THREE.Group();
+scene.add(globeGroup);
+
+function resize() {
+  // Use the parent's actual rendered size, not the canvas's own clientWidth/Height
+  // (the canvas was being driven by its own buffer dims, which caused stretching).
+  const parent = canvas.parentElement;
+  const w = parent.clientWidth;
+  const h = parent.clientHeight;
+  renderer.setSize(w, h, true); // true = update CSS dimensions too
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+
+  // Position globe on the right; on narrow screens, ease back toward center
+  // so it doesn't get clipped off-screen.
+  const aspect = w / h;
+  if (aspect > 1.2) {
+    globeGroup.position.x = 1.6;
+  } else if (aspect > 0.8) {
+    globeGroup.position.x = 0.7;
+  } else {
+    globeGroup.position.x = 0;
+  }
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ---------- Cities (lat, lon) for supply-chain lanes ----------
+const cities = {
+  shanghai:     { lat:  31.23, lon: 121.47 },
+  singapore:    { lat:   1.35, lon: 103.82 },
+  tokyo:        { lat:  35.68, lon: 139.69 },
+  mumbai:       { lat:  19.08, lon:  72.88 },
+  dubai:        { lat:  25.20, lon:  55.27 },
+  rotterdam:    { lat:  51.95, lon:   4.14 },
+  hamburg:      { lat:  53.55, lon:   9.99 },
+  london:       { lat:  51.51, lon:  -0.13 },
+  newyork:      { lat:  40.71, lon: -74.01 },
+  losangeles:   { lat:  34.05, lon:-118.24 },
+  panama:       { lat:   8.98, lon: -79.52 },
+  saopaulo:     { lat: -23.55, lon: -46.63 },
+  capetown:     { lat: -33.92, lon:  18.42 },
+  sydney:       { lat: -33.87, lon: 151.21 },
+  hochiminh:    { lat:  10.82, lon: 106.63 },
+  busan:        { lat:  35.18, lon: 129.08 },
+};
+
+// Lanes — pairs of city keys (real-world supply-chain corridors)
+const lanes = [
+  ['shanghai', 'losangeles'],
+  ['shanghai', 'rotterdam'],
+  ['singapore', 'rotterdam'],
+  ['mumbai', 'dubai'],
+  ['dubai', 'hamburg'],
+  ['hochiminh', 'losangeles'],
+  ['busan', 'newyork'],
+  ['tokyo', 'losangeles'],
+  ['shanghai', 'panama'],
+  ['saopaulo', 'rotterdam'],
+  ['singapore', 'sydney'],
+  ['capetown', 'rotterdam'],
+  ['mumbai', 'singapore'],
+  ['london', 'newyork'],
+];
+
+// ---------- Helpers ----------
+const GLOBE_RADIUS = 1.6;
+
+function latLonToVec3(lat, lon, radius = GLOBE_RADIUS) {
+  const phi   = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+  return new THREE.Vector3(
+    -radius * Math.sin(phi) * Math.cos(theta),
+     radius * Math.cos(phi),
+     radius * Math.sin(phi) * Math.sin(theta),
+  );
+}
+
+// ---------- Dotted globe ----------
+// We sample a land mask (equirectangular) and place a dot wherever the pixel
+// is land. The earth-topology heightmap from three-globe is reliable and
+// CORS-friendly. The key is using a very low luminance threshold — ocean is
+// near-pure-black (RGB ~0), and any positive elevation (even low river basins)
+// shows up as at least slightly above black.
+
+const LAND_IMG_URLS = [
+  // Primary: three-globe's earth-topology heightmap (ocean is near-black, land is brighter)
+  'https://unpkg.com/three-globe@2.31.1/example/img/earth-topology.png',
+  // Fallback: same image on a different CDN
+  'https://cdn.jsdelivr.net/npm/three-globe@2.31.1/example/img/earth-topology.png',
+];
+
+function buildDots(landSampler) {
+  const N = 18000; // dot count — tuned for clarity + perf
+  const positions = [];
+
+  // Fibonacci sphere distribution
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i / (N - 1)) * 2;
+    const radiusAtY = Math.sqrt(1 - y * y);
+    const theta = golden * i;
+    const x = Math.cos(theta) * radiusAtY;
+    const z = Math.sin(theta) * radiusAtY;
+
+    // Convert to lat/lon for land sampling
+    const lat = Math.asin(y) * (180 / Math.PI);
+    const lon = Math.atan2(z, x) * (180 / Math.PI);
+
+    if (!landSampler || landSampler(lat, lon)) {
+      positions.push(x * GLOBE_RADIUS, y * GLOBE_RADIUS, z * GLOBE_RADIUS);
+    }
+  }
+
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+  const mat = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 0.012,            // smaller so denser dots don't look fuzzy
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0.9,
+    depthWrite: false,
+  });
+
+  return new THREE.Points(geom, mat);
+}
+
+// Subtle inner globe (slightly smaller than dot radius so dots sit on top)
+const glowGeom = new THREE.SphereGeometry(GLOBE_RADIUS * 0.985, 64, 64);
+const glowMat = new THREE.MeshBasicMaterial({
+  color: 0x0a1a2a,
+  transparent: true,
+  opacity: 0.55,
+});
+globeGroup.add(new THREE.Mesh(glowGeom, glowMat));
+
+// Load land texture and build dots. Try URLs in sequence; stop at the first success.
+const loader = new THREE.TextureLoader();
+loader.crossOrigin = 'anonymous';
+
+function tryLoadUrl(idx) {
+  if (idx >= LAND_IMG_URLS.length) {
+    // All failed — use a pseudo-random fallback so the globe still has dots
+    globeGroup.add(buildDots(() => Math.random() < 0.35));
+    return;
+  }
+  loader.load(
+    LAND_IMG_URLS[idx],
+    (tex) => {
+      const img = tex.image;
+      const off = document.createElement('canvas');
+      off.width = img.width;
+      off.height = img.height;
+      const ctx = off.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, off.width, off.height).data;
+
+      function sampleLand(lat, lon) {
+        // equirectangular: lon -180..180 -> x 0..w ; lat 90..-90 -> y 0..h
+        const u = (lon + 180) / 360;
+        const v = (90 - lat) / 180;
+        const x = Math.floor(u * (off.width - 1));
+        const y = Math.floor(v * (off.height - 1));
+        const i = (y * off.width + x) * 4;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+
+        // earth-topology heightmap: ocean is near-pure-black (lum ~ 0-3),
+        // sea-level land is already noticeably brighter (~10-20),
+        // mountains brighter still. A low threshold catches all land
+        // including low-elevation river basins.
+        const lum = (r + g + b) / 3;
+        return lum > 4;
+      }
+
+      globeGroup.add(buildDots(sampleLand));
+    },
+    undefined,
+    () => tryLoadUrl(idx + 1)  // try next URL on failure
+  );
+}
+
+tryLoadUrl(0);
+
+// ---------- Supply chain arcs ----------
+const arcsGroup = new THREE.Group();
+globeGroup.add(arcsGroup);
+
+function buildArc(startVec, endVec) {
+  // Great-circle midpoint, lifted outward to create the arc
+  const mid = startVec.clone().add(endVec).multiplyScalar(0.5);
+  const dist = startVec.distanceTo(endVec);
+  const lift = 1 + (dist / (GLOBE_RADIUS * 2)) * 0.55; // longer lanes arc higher
+  mid.normalize().multiplyScalar(GLOBE_RADIUS * lift);
+
+  const curve = new THREE.QuadraticBezierCurve3(startVec, mid, endVec);
+  const points = curve.getPoints(64);
+  return { curve, points };
+}
+
+const laneObjects = [];
+
+lanes.forEach(([aKey, bKey]) => {
+  const a = cities[aKey];
+  const b = cities[bKey];
+  const vA = latLonToVec3(a.lat, a.lon, GLOBE_RADIUS * 1.005);
+  const vB = latLonToVec3(b.lat, b.lon, GLOBE_RADIUS * 1.005);
+  const { curve, points } = buildArc(vA, vB);
+
+  // Static arc line (faint)
+  const lineGeom = new THREE.BufferGeometry().setFromPoints(points);
+  const lineMat = new THREE.LineBasicMaterial({
+    color: 0x0054ff,
+    transparent: true,
+    opacity: 0.35,
+  });
+  const line = new THREE.Line(lineGeom, lineMat);
+  arcsGroup.add(line);
+
+  // Endpoint markers — brand blue
+  [vA, vB].forEach((v) => {
+    const dotGeom = new THREE.SphereGeometry(0.02, 12, 12);
+    const dotMat = new THREE.MeshBasicMaterial({ color: 0x0054ff });
+    const dot = new THREE.Mesh(dotGeom, dotMat);
+    dot.position.copy(v);
+    arcsGroup.add(dot);
+  });
+
+  // White pulse traveling along the lane — half the original size
+  const pulseGeom = new THREE.SphereGeometry(0.0125, 12, 12);
+  const pulseMat = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 1,
+  });
+  const pulse = new THREE.Mesh(pulseGeom, pulseMat);
+  arcsGroup.add(pulse);
+
+  laneObjects.push({
+    curve,
+    line,
+    pulse,
+    phase: Math.random(),
+    speed: 0.10 + Math.random() * 0.10,
+  });
+});
+
+// ---------- Animate ----------
+const clock = new THREE.Clock();
+let autoYaw = 0;
+
+// ---------- Custom cursor (delayed-follow ring) ----------
+// The dot tracks the mouse exactly. The ring lerps toward the dot's target
+// position each frame, creating a smooth chase with perceptible delay.
+const cursorDot  = document.getElementById('cursor-dot');
+const cursorRing = document.getElementById('cursor-ring');
+const mouse = { x: -100, y: -100 };          // current target (mouse position)
+const ring  = { x: -100, y: -100 };          // ring's current position
+let cursorVisible = false;
+
+window.addEventListener('mousemove', (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  if (!cursorVisible) {
+    cursorVisible = true;
+    cursorDot.style.opacity  = '1';
+    cursorRing.style.opacity = '1';
+    // Snap the ring to the cursor on first appearance to avoid a flying-in glitch
+    ring.x = mouse.x;
+    ring.y = mouse.y;
+  }
+});
+
+window.addEventListener('mouseleave', () => {
+  cursorVisible = false;
+  cursorDot.style.opacity  = '0';
+  cursorRing.style.opacity = '0';
+});
+
+function updateCursor() {
+  // Dot: exact 1:1 with mouse (no lerp)
+  cursorDot.style.transform  = `translate3d(${mouse.x}px, ${mouse.y}px, 0)`;
+  // Ring: lerp toward mouse. Lower factor = longer delay / smoother chase.
+  ring.x += (mouse.x - ring.x) * 0.18;
+  ring.y += (mouse.y - ring.y) * 0.18;
+  cursorRing.style.transform = `translate3d(${ring.x}px, ${ring.y}px, 0)`;
+}
+
+// ---------- Visibility-gated animation loop ----------
+// Pause the globe's render loop when the hero section is off-screen.
+// This is the biggest performance win — once the user scrolls past the hero
+// the GPU/CPU stop doing per-frame Three.js work entirely.
+let heroVisible = true;
+const heroEl = canvas.closest('.hero-bg');
+if (heroEl && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    heroVisible = entries[0].isIntersecting;
+  }, { threshold: 0 });
+  io.observe(heroEl);
+}
+
+// Also pause when the browser tab is hidden
+let tabVisible = !document.hidden;
+document.addEventListener('visibilitychange', () => {
+  tabVisible = !document.hidden;
+  // Reset the clock when coming back so dt doesn't spike
+  if (tabVisible) clock.getDelta();
+});
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Skip all per-frame work when hero is off-screen or tab is hidden.
+  // We still keep RAF scheduled so we wake up when conditions change.
+  if (!heroVisible || !tabVisible) {
+    // Drain the clock so dt doesn't accumulate while paused
+    clock.getDelta();
+    return;
+  }
+
+  const dt = clock.getDelta();
+
+  // Auto-rotate (yaw only) — strictly horizontal, no user interaction
+  autoYaw += dt * 0.08;
+  globeGroup.rotation.y = autoYaw;
+
+  // Advance white pulses along each lane
+  for (let i = 0; i < laneObjects.length; i++) {
+    const lo = laneObjects[i];
+    lo.phase += dt * lo.speed;
+    if (lo.phase > 1) lo.phase -= 1;
+    lo.curve.getPoint(lo.phase, lo.pulse.position); // write into existing Vector3 (no alloc)
+    // Fade near endpoints so it reads as the pulse dissolving into the city
+    const edge = Math.min(lo.phase, 1 - lo.phase);
+    lo.pulse.material.opacity = Math.min(1, edge * 6);
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// ---------- Cursor loop (always running, separate from globe) ----------
+// The cursor MUST keep updating even when the globe loop pauses (hero off-screen),
+// because the user is still moving their mouse and expects the custom cursor to
+// follow it everywhere on the page. We pause it only when the tab is hidden.
+function cursorLoop() {
+  requestAnimationFrame(cursorLoop);
+  if (!tabVisible) return;
+  updateCursor();
+}
+cursorLoop();
+</script>
+
+</body>
+</html>
