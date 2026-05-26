@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en" data-theme="main">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GoComet — Built for the complexity of cross-border trade.</title>
+<style>
+  /* ---------- Fonts ---------- */
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Semibold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Extrabold.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Black.woff2") format("woff2");font-weight:900;font-style:normal;font-display:swap}
+
+  /* ---------- Tokens (Main theme) ---------- */
+  :root{
+    --primary:#0054FF; --primary-hover:#003E9C; --secondary:#3376FF; --accent:#A033FF;
+    --success:#179E60; --warning:#F68C00; --danger:#EB2E2E;
+    --bg:#FFFFFF; --surface:#F0F6FF; --border:#DADDE3;
+    --text:#0C1C3C; --text-muted:#8E98A8;
+
+    --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:16px; --space-xl:24px;
+    --space-2xl:32px; --space-3xl:48px; --space-4xl:64px; --space-5xl:96px; --space-6xl:128px;
+    --r-sm:4px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-2xl:24px; --r-full:9999px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Proxima Nova",system-ui,sans-serif;
+    background:var(--bg); color:var(--text);
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- Type scale ---------- */
+  .h1{font-size:clamp(40px,5.6vw,80px);font-weight:800;line-height:1.04;letter-spacing:-0.025em}
+  .h2{font-size:clamp(32px,3.6vw,56px);font-weight:700;line-height:1.08;letter-spacing:-0.02em}
+  .h3{font-size:clamp(24px,2.4vw,36px);font-weight:700;line-height:1.15;letter-spacing:-0.015em}
+  .h4{font-size:22px;font-weight:600;line-height:1.3}
+  .h5{font-size:18px;font-weight:600;line-height:1.4}
+  .body-lg{font-size:19px;line-height:1.55;color:var(--text-muted)}
+  .body{font-size:16px;line-height:1.6;color:var(--text-muted)}
+  .body-sm{font-size:14px;line-height:1.5;color:var(--text-muted)}
+  .caption{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--text-muted)}
+
+  /* ---------- Layout ---------- */
+  .container{max-width:1280px;margin:0 auto;padding:0 var(--space-xl)}
+  @media (max-width:640px){.container{padding:0 var(--space-lg)}}
+  .section{padding:var(--space-5xl) 0;background:var(--bg)}
+  .section-alt{background:var(--surface)}
+  @media (max-width:640px){.section{padding:var(--space-3xl) 0}}
+
+  /* ---------- Nav ---------- */
+  .nav{position:sticky;top:0;z-index:100;background:color-mix(in srgb,#FFFFFF 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .nav-inner{max-width:1280px;margin:0 auto;padding:18px var(--space-xl);display:flex;align-items:center;gap:var(--space-2xl)}
+  .nav-brand{display:flex;align-items:center;gap:var(--space-md)}
+  .nav-brand img{height:24px;width:auto;display:block}
+  .nav-links{display:flex;gap:var(--space-xl);margin-left:var(--space-2xl);flex:1}
+  .nav-links a{font-size:14px;font-weight:500;color:var(--text);opacity:.78;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-cta{display:flex;gap:var(--space-md);align-items:center}
+  @media (max-width:840px){.nav-links{display:none}}
+
+  /* ---------- Buttons ---------- */
+  .btn{display:inline-flex;align-items:center;gap:var(--space-sm);padding:12px 22px;border-radius:var(--r-md);font-weight:600;font-size:14.5px;cursor:pointer;border:0;transition:all .18s;font-family:inherit}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-hover)}
+  .btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn-secondary:hover{background:var(--surface);border-color:var(--text)}
+  .btn-ghost{background:transparent;color:var(--primary);padding:8px 0}
+  .btn-ghost::after{content:" →";transition:transform .18s;display:inline-block}
+  .btn-ghost:hover::after{transform:translateX(4px)}
+
+  /* ---------- Hero (Fold 1) ---------- */
+  .hero{
+    padding:var(--space-6xl) 0 var(--space-5xl);
+    background:var(--bg);
+    position:relative; overflow:hidden;
+  }
+  .hero::before{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(0,84,255,.07), transparent 60%),
+      radial-gradient(700px 400px at 5% 110%, rgba(160,51,255,.05), transparent 60%);
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;text-align:center;max-width:920px;margin:0 auto}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 16px; background:#fff; border:1px solid var(--border);
+    border-radius:var(--r-full); font-size:12px; font-weight:600;
+    color:var(--text); letter-spacing:0.08em; text-transform:uppercase;
+    box-shadow:0 1px 0 rgba(12,28,60,.04);
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:var(--r-full);background:var(--primary);box-shadow:0 0 0 4px rgba(0,84,255,.12)}
+  .hero h1{margin:var(--space-xl) 0 var(--space-xl);max-width:900px;margin-left:auto;margin-right:auto}
+  .hero h1 .stroke{
+    background:linear-gradient(90deg,var(--primary) 0%,var(--accent) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{font-size:19px;line-height:1.55;color:var(--text-muted);max-width:740px;margin:0 auto var(--space-2xl)}
+  .hero-ctas{display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap}
+
+  /* hero visual — stylized journey */
+  .hero-visual{
+    margin-top:var(--space-4xl);
+    background:#fff; border:1px solid var(--border);
+    border-radius:var(--r-2xl); padding:var(--space-3xl) var(--space-2xl);
+    box-shadow:0 30px 60px -30px rgba(12,28,60,.15);
+    position:relative;
+  }
+  .journey{display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);overflow-x:auto;padding-bottom:8px}
+  .journey-node{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:10px;
+    text-align:center; min-width:90px;
+  }
+  .journey-node .icon{
+    width:56px;height:56px;border-radius:var(--r-lg);
+    background:var(--surface); border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;
+  }
+  .journey-node .label{font-size:12px;font-weight:600;color:var(--text)}
+  .journey-node .sub{font-size:10.5px;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase}
+  .journey-line{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--primary),var(--primary) 4px,transparent 4px,transparent 10px);min-width:24px}
+
+  /* ---------- Proof bar (Fold 2) ---------- */
+  .proof-bar{padding:var(--space-3xl) 0;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-xl);text-align:center}
+  .stat .num{font-size:clamp(28px,3.2vw,44px);font-weight:800;color:var(--primary);line-height:1;letter-spacing:-0.02em}
+  .stat .lbl{font-size:12px;color:var(--text-muted);margin-top:8px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  @media (max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr);gap:var(--space-lg)}}
+
+  .logo-row{margin-top:var(--space-2xl)}
+  .logo-row .caption{display:block;text-align:center;margin-bottom:var(--space-lg)}
+  .logo-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:var(--space-xl);align-items:center;opacity:.62;filter:grayscale(1)}
+  .logo-grid img{max-width:100%;max-height:32px;width:auto;height:auto;justify-self:center;object-fit:contain}
+  @media (max-width:960px){.logo-grid{grid-template-columns:repeat(4,1fr);gap:var(--space-lg)}}
+
+  /* ---------- Section header ---------- */
+  .section-header{max-width:760px;margin:0 auto var(--space-3xl);text-align:center}
+  .section-header .eyebrow-text{color:var(--primary);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:var(--space-md);display:block}
+  .section-header .lede{font-size:18px;color:var(--text-muted);margin-top:var(--space-lg)}
+
+  /* ---------- Difference Strip (Fold 3) ---------- */
+  .diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-xl)}
+  @media (max-width:960px){.diff-grid{grid-template-columns:1fr}}
+  .diff-card{
+    background:#fff; border:1px solid var(--border);
+    border-radius:var(--r-xl); padding:var(--space-2xl) var(--space-2xl) var(--space-3xl);
+    position:relative; transition:transform .2s,border-color .2s,box-shadow .2s;
+  }
+  .diff-card:hover{transform:translateY(-4px);border-color:var(--primary);box-shadow:0 24px 40px -28px rgba(0,84,255,.25)}
+  .diff-num{
+    font-size:64px;font-weight:900;line-height:1;
+    color:var(--accent); letter-spacing:-0.04em;
+    font-feature-settings:"tnum";
+    margin-bottom:var(--space-lg);
+  }
+  .diff-card h3{margin:0 0 var(--space-md);font-size:24px;font-weight:700;letter-spacing:-0.01em;line-height:1.2}
+  .diff-card p{margin:0;color:var(--text-muted);font-size:15.5px;line-height:1.6}
+
+  /* ---------- Products (Fold 4) ---------- */
+  .products-flow{margin-top:var(--space-4xl);position:relative}
+  .product-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-md);position:relative;z-index:2}
+  @media (max-width:1100px){.product-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.product-grid{grid-template-columns:1fr}}
+  .product-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:var(--space-xl); transition:all .2s;
+    display:flex; flex-direction:column; gap:var(--space-md);
+  }
+  .product-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 16px 32px -20px rgba(0,84,255,.2)}
+  .product-card .pname{font-weight:700;font-size:18px;color:var(--text);letter-spacing:-0.005em}
+  .product-card .pcap{font-size:13.5px;color:var(--text-muted);line-height:1.5;flex:1}
+  .product-card .pplug{font-size:11px;font-weight:600;color:var(--primary);letter-spacing:.06em;text-transform:uppercase;border-top:1px dashed var(--border);padding-top:var(--space-md)}
+
+  .flow-rail{
+    height:2px; background:repeating-linear-gradient(90deg,var(--border),var(--border) 6px,transparent 6px,transparent 12px);
+    margin:var(--space-3xl) 0 var(--space-lg);
+  }
+  .closing-line{
+    font-style:italic;font-size:18px;color:var(--text-muted);text-align:center;
+    max-width:760px;margin:var(--space-3xl) auto 0;
+  }
+  .closing-line::before,.closing-line::after{content:"—";color:var(--primary);font-style:normal;margin:0 8px}
+
+  /* ---------- AI Agents (Fold 5) ---------- */
+  .ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3xl);align-items:start}
+  @media (max-width:960px){.ai-grid{grid-template-columns:1fr}}
+  .ai-left .buzzlist{
+    display:flex;flex-wrap:wrap;gap:8px;margin:var(--space-xl) 0;
+  }
+  .buzzword{
+    display:inline-block; padding:6px 12px; background:var(--surface);
+    border:1px solid var(--border); border-radius:var(--r-full);
+    font-size:12.5px;font-weight:500; color:var(--text-muted);
+    text-decoration:line-through; text-decoration-color:rgba(235,46,46,.6);
+    text-decoration-thickness:2px;
+  }
+  .ai-right .pipeline{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-xl);
+    padding:var(--space-2xl); position:relative; overflow:hidden;
+  }
+  .pipeline-title{font-size:12px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:var(--space-lg)}
+  .pipeline-stages{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:var(--space-xl)}
+  .pipe-stage{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
+    padding:10px 6px; text-align:center; position:relative;
+  }
+  .pipe-stage .n{font-size:9.5px;color:var(--primary);font-weight:700;letter-spacing:.1em}
+  .pipe-stage .s{font-size:12px;font-weight:600;margin-top:2px;color:var(--text)}
+  .agent-output{
+    background:#0C1C3C; color:#F0F6FF; border-radius:var(--r-md);
+    padding:var(--space-lg); font-family:"SF Mono","Monaco","Menlo",monospace;
+    font-size:12.5px; line-height:1.6;
+  }
+  .agent-output .key{color:#7AB6FF}
+  .agent-output .val{color:#fff}
+  .agent-output .ev{color:#A6F1C7}
+
+  /* ---------- Nova Architecture (Fold 6) ---------- */
+  .nova-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-lg)}
+  @media (max-width:1000px){.nova-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.nova-grid{grid-template-columns:1fr}}
+  .nova-pillar{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:var(--space-xl); transition:all .2s; position:relative;
+  }
+  .nova-pillar.featured{
+    background:linear-gradient(180deg,#fff 0%,var(--surface) 100%);
+    border-color:var(--primary);
+  }
+  .nova-pillar .pill-label{
+    position:absolute;top:-10px;left:var(--space-xl);
+    background:var(--primary);color:#fff;font-size:10px;font-weight:700;
+    padding:4px 10px;border-radius:var(--r-full);letter-spacing:.1em;text-transform:uppercase;
+  }
+  .nova-pillar h4{margin:0 0 var(--space-sm);font-size:18px;font-weight:700;letter-spacing:-0.005em}
+  .nova-pillar p{margin:0;font-size:14px;color:var(--text-muted);line-height:1.55}
+
+  /* ---------- Cross-Border Story (Fold 7) ---------- */
+  .cb-grid{display:grid;grid-template-columns:5fr 7fr;gap:var(--space-3xl);align-items:center}
+  @media (max-width:960px){.cb-grid{grid-template-columns:1fr}}
+  .cb-text p{font-size:17px;line-height:1.65;color:var(--text);margin:0 0 var(--space-lg)}
+  .cb-text .pull{font-style:italic;color:var(--text-muted);font-size:15px;border-left:3px solid var(--primary);padding-left:var(--space-lg);margin-top:var(--space-xl)}
+  .cb-visual{
+    background:linear-gradient(180deg,var(--surface) 0%,#fff 100%);
+    border:1px solid var(--border); border-radius:var(--r-2xl); padding:var(--space-2xl);
+  }
+  .cb-phases{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-lg)}
+  .cb-phase{padding:var(--space-lg);background:#fff;border:1px solid var(--border);border-radius:var(--r-lg)}
+  .cb-phase .ph-n{font-size:10.5px;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .cb-phase .ph-t{font-size:15px;font-weight:700;margin:6px 0 4px}
+  .cb-phase .ph-d{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+
+  /* ---------- Proof (Fold 8) ---------- */
+  .proof-numbers{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-lg);
+    background:var(--text); color:#fff; border-radius:var(--r-2xl);
+    padding:var(--space-2xl) var(--space-xl); margin:var(--space-3xl) 0;
+  }
+  .proof-numbers .num{color:#fff;font-size:clamp(26px,3vw,40px)}
+  .proof-numbers .lbl{color:rgba(255,255,255,.6)}
+  @media (max-width:768px){.proof-numbers{grid-template-columns:repeat(2,1fr)}}
+
+  .quote-block{
+    max-width:840px;margin:var(--space-3xl) auto 0; text-align:center;
+    padding:var(--space-2xl); position:relative;
+  }
+  .quote-block::before{
+    content:"\201C"; font-size:120px; line-height:1; color:var(--primary);
+    position:absolute; top:-20px; left:50%; transform:translateX(-50%); font-family:Georgia,serif;
+    opacity:.2;
+  }
+  .quote-text{font-size:clamp(22px,2.3vw,30px);font-weight:600;line-height:1.35;letter-spacing:-0.01em;color:var(--text);position:relative}
+  .quote-attribution{margin-top:var(--space-lg);font-size:13.5px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+
+  .logo-wall{margin-top:var(--space-3xl);display:grid;grid-template-columns:repeat(8,1fr);gap:var(--space-lg);align-items:center;opacity:.7}
+  .logo-wall img{max-width:100%;max-height:36px;justify-self:center;object-fit:contain;filter:grayscale(1)}
+  @media (max-width:960px){.logo-wall{grid-template-columns:repeat(4,1fr)}}
+
+  /* ---------- Speed Story (Fold 9) ---------- */
+  .speed-compare{margin-top:var(--space-3xl)}
+  .speed-row{
+    display:grid;grid-template-columns:120px 1fr;gap:var(--space-lg);
+    align-items:center;padding:var(--space-lg) 0;border-bottom:1px solid var(--border);
+  }
+  .speed-row:last-child{border-bottom:0}
+  .speed-label{font-weight:700;font-size:14px}
+  .speed-label.legacy{color:var(--danger)}
+  .speed-label.us{color:var(--primary)}
+  .speed-track{position:relative;height:60px;background:var(--surface);border-radius:var(--r-md);overflow:hidden}
+  .speed-bar{
+    position:absolute;top:0;bottom:0;left:0;
+    display:flex;align-items:center;justify-content:flex-end;
+    padding:0 var(--space-lg); color:#fff; font-weight:700; font-size:13px;
+  }
+  .speed-bar.legacy{width:100%;background:linear-gradient(90deg,rgba(235,46,46,.15) 0%,rgba(235,46,46,.5) 90%,var(--danger) 100%)}
+  .speed-bar.us{width:30%;background:linear-gradient(90deg,var(--primary) 0%,var(--accent) 100%)}
+  .speed-bar.legacy span{color:var(--danger);text-shadow:0 1px 0 #fff}
+  .speed-milestones{
+    display:flex;justify-content:space-between;margin-top:var(--space-md);
+    font-size:11px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+  }
+
+  /* ---------- We Are NOT / We ARE (Fold 10) ---------- */
+  .notare-table{
+    border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;background:#fff;
+  }
+  .notare-row{display:grid;grid-template-columns:1fr 1.4fr;border-bottom:1px solid var(--border)}
+  .notare-row:last-child{border-bottom:0}
+  .notare-not{
+    padding:var(--space-2xl); background:#FFF5F5; color:var(--text);
+    display:flex;align-items:center;gap:var(--space-md); position:relative;
+  }
+  .notare-not::before{
+    content:"✕"; flex:0 0 28px; height:28px;background:var(--danger);color:#fff;
+    border-radius:var(--r-full);display:inline-flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;
+  }
+  .notare-not span{font-weight:700;font-size:18px;text-decoration:line-through;text-decoration-color:rgba(235,46,46,.5);text-decoration-thickness:2px}
+  .notare-are{
+    padding:var(--space-2xl); background:#fff; color:var(--text);
+    display:flex;align-items:flex-start;gap:var(--space-md);
+  }
+  .notare-are::before{
+    content:"✓"; flex:0 0 28px; height:28px;background:var(--success);color:#fff;
+    border-radius:var(--r-full);display:inline-flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700; margin-top:2px;
+  }
+  .notare-are p{margin:0;font-size:15.5px;line-height:1.6}
+  @media (max-width:768px){.notare-row{grid-template-columns:1fr}.notare-not{border-bottom:1px solid var(--border)}}
+
+  /* ---------- Final CTA (Fold 11) ---------- */
+  .final-cta{
+    background:linear-gradient(135deg,#0C1C3C 0%,#0054FF 100%);
+    color:#fff; border-radius:var(--r-2xl); padding:var(--space-5xl) var(--space-2xl);
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .final-cta::before{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(600px 300px at 80% 0%,rgba(160,51,255,.4),transparent 60%);
+    pointer-events:none;
+  }
+  .final-cta > *{position:relative}
+  .final-cta h2{color:#fff;margin:0 0 var(--space-lg)}
+  .final-cta .lede{color:rgba(255,255,255,.78);font-size:18px;max-width:640px;margin:0 auto var(--space-2xl)}
+  .final-cta .btn-primary{background:#fff;color:var(--primary)}
+  .final-cta .btn-primary:hover{background:#F0F6FF}
+  .final-cta .btn-ghost{color:#fff;opacity:.85}
+  .final-cta-ctas{display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap}
+
+  /* ---------- Footer ---------- */
+  .footer{background:var(--surface);border-top:1px solid var(--border);padding:var(--space-4xl) 0 var(--space-2xl);margin-top:var(--space-5xl)}
+  .footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:var(--space-3xl)}
+  .footer h6{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin:0 0 var(--space-lg);font-weight:700}
+  .footer ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+  .footer ul a{font-size:14px;color:var(--text);opacity:.7}
+  .footer ul a:hover{opacity:1}
+  .footer-bottom{border-top:1px solid var(--border);margin-top:var(--space-3xl);padding-top:var(--space-xl);display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)}
+  @media (max-width:960px){.footer-inner{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.footer-inner{grid-template-columns:1fr}}
+
+  /* utility */
+  .center{text-align:center}
+  .mt-2xl{margin-top:var(--space-2xl)}
+  .mt-3xl{margin-top:var(--space-3xl)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#"><img src="assets/gocomet-logo.svg" alt="GoComet" /></a>
+    <div class="nav-links">
+      <a href="#products">Products</a>
+      <a href="#agents">AI & Agents</a>
+      <a href="#nova">Nova</a>
+      <a href="#proof">Customers</a>
+      <a href="#">Resources</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-secondary">Sign in</a>
+      <a href="#cta" class="btn btn-primary">Book a demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- FOLD 01 — HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <span class="eyebrow"><span class="dot"></span> AI-Native Adaptive Platform for Global Trade</span>
+      <h1 class="h1">Built for the complexity of <span class="stroke">cross-border trade.</span></h1>
+      <p class="hero-sub">Your ops team is firefighting exceptions across disconnected tools, spreadsheets, and partners who never log in. We map your exact process, unite every partner into one connected workflow, and run it end to end. Adapted to you. Live in weeks.</p>
+      <div class="hero-ctas">
+        <a href="#cta" class="btn btn-primary">See a process-fit demo</a>
+        <a href="#nova" class="btn btn-secondary">How Nova works</a>
+      </div>
+
+      <!-- Stylized journey visual -->
+      <div class="hero-visual">
+        <div class="journey">
+          <div class="journey-node">
+            <div class="icon">📝</div>
+            <div class="label">PO Origin</div>
+            <div class="sub">Germany</div>
+          </div>
+          <div class="journey-line"></div>
+          <div class="journey-node">
+            <div class="icon">🌐</div>
+            <div class="label">Multi-country</div>
+            <div class="sub">15+ origins</div>
+          </div>
+          <div class="journey-line"></div>
+          <div class="journey-node">
+            <div class="icon">⚓</div>
+            <div class="label">Port</div>
+            <div class="sub">JNPT</div>
+          </div>
+          <div class="journey-line"></div>
+          <div class="journey-node">
+            <div class="icon">🛃</div>
+            <div class="label">CHA</div>
+            <div class="sub">WhatsApp</div>
+          </div>
+          <div class="journey-line"></div>
+          <div class="journey-node">
+            <div class="icon">🏭</div>
+            <div class="label">Plant</div>
+            <div class="sub">Assembly</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FOLD 02 — PROOF BAR -->
+<section class="proof-bar">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat"><div class="num">50+</div><div class="lbl">Enterprise deployments</div></div>
+      <div class="stat"><div class="num">$5B</div><div class="lbl">In shipments</div></div>
+      <div class="stat"><div class="num">2M+</div><div class="lbl">Containers tracked</div></div>
+      <div class="stat"><div class="num">15+</div><div class="lbl">Countries per customer</div></div>
+    </div>
+    <div class="logo-row">
+      <span class="caption">Trusted by global enterprise shippers</span>
+      <div class="logo-grid">
+        <img src="assets/logos/unilever.svg" alt="Unilever" />
+        <img src="assets/logos/honda.svg" alt="Honda" />
+        <img src="assets/logos/general-mills.svg" alt="General Mills" />
+        <img src="assets/logos/sun-pharma.svg" alt="Sun Pharma" />
+        <img src="assets/logos/john-deere.svg" alt="John Deere" />
+        <img src="assets/logos/tata-motors.svg" alt="Tata Motors" />
+        <img src="assets/logos/koch.svg" alt="Koch" />
+        <img src="assets/logos/schaeffler.svg" alt="Schaeffler" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 03 — DIFFERENCE STRIP -->
+<section class="section" id="difference">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">Three wedges</span>
+      <h2 class="h2">Why this is different.</h2>
+      <p class="lede">Carry these three ideas down the page.</p>
+    </div>
+    <div class="diff-grid">
+      <article class="diff-card">
+        <div class="diff-num">01</div>
+        <h3>Cross-border, by data.</h3>
+        <p>$5B in shipments, 2M+ containers tracked, port and freight forwarder relationships across international routes. Built on data domestic platforms do not have.</p>
+      </article>
+      <article class="diff-card">
+        <div class="diff-num">02</div>
+        <h3>Adapted, as a product.</h3>
+        <p>Your as-is process is the product. Approvals, exceptions, document standards, off-platform partners. Mapped, adapted, and live. No template fitting.</p>
+      </article>
+      <article class="diff-card">
+        <div class="diff-num">03</div>
+        <h3>Weeks, by architecture.</h3>
+        <p>Nova's five-pillar architecture makes per-customer adaptation economically viable. Live in six weeks across 50+ enterprise deployments. By design, not by hustle.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 04 — PRODUCTS -->
+<section class="section section-alt" id="products">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">Product depth</span>
+      <h2 class="h2">The workflow is the product. These are the engines that power it.</h2>
+      <p class="lede">Five deep domain products, built over a decade of running global trade. Your workflow decides which products plug in, where, and how. No off-the-shelf module. No forced standardization.</p>
+    </div>
+
+    <div class="products-flow">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="pname">GoOrder</div>
+          <div class="pcap">PO ingestion and order management with full context: criticality, plant destination, supplier history.</div>
+          <div class="pplug">Workflow start</div>
+        </div>
+        <div class="product-card">
+          <div class="pname">GoProcure</div>
+          <div class="pcap">Carrier selection and rate intelligence. Live rate comparison across freight forwarders, contract enforcement, spot negotiation.</div>
+          <div class="pplug">Carrier approval</div>
+        </div>
+        <div class="product-card">
+          <div class="pname">GoTrack</div>
+          <div class="pcap">Multi-modal, multi-leg shipment tracking. Real-time ETA, exception detection, port and carrier data.</div>
+          <div class="pplug">Booking → receipt</div>
+        </div>
+        <div class="product-card">
+          <div class="pname">GoShipment</div>
+          <div class="pcap">End-to-end shipment execution. Booking, document collection, dispatch coordination, last-mile orchestration.</div>
+          <div class="pplug">Execution backbone</div>
+        </div>
+        <div class="product-card">
+          <div class="pname">GoInvoice</div>
+          <div class="pcap">Invoice reconciliation and variance management. Three-way match across PO, shipment, and contract.</div>
+          <div class="pplug">Finance close</div>
+        </div>
+      </div>
+      <div class="flow-rail"></div>
+    </div>
+
+    <p class="closing-line">Each product is deep enough to stand on its own. Bound together by Nova and adapted to your workflow, they run your trade operation end to end.</p>
+
+    <div class="center mt-3xl">
+      <a href="#" class="btn-ghost">Explore the product portfolio</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 05 — AI & AGENTS -->
+<section class="section" id="agents">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">AI with substance</span>
+      <h2 class="h2">Most platforms talk about AI. Few can show you the system.</h2>
+    </div>
+
+    <div class="ai-grid">
+      <div class="ai-left">
+        <p style="font-size:16.5px;line-height:1.65;color:var(--text);margin:0">These are common claims across this category. The difference is in what makes them true.</p>
+        <div class="buzzlist">
+          <span class="buzzword">AI agents that act autonomously</span>
+          <span class="buzzword">No-code orchestration</span>
+          <span class="buzzword">System of record → system of action</span>
+          <span class="buzzword">Weeks not quarters</span>
+        </div>
+        <p style="font-size:16px;line-height:1.7;color:var(--text-muted);margin:0 0 var(--space-lg)">GoComet's agents are not chatbots wedged into a sidebar. They are first-class analytical engines, built directly into your workflow. Every agent runs a structured five-stage pipeline, grounded in your proprietary data and the deep context of your exact process.</p>
+        <a href="#" class="btn-ghost">Read the Nova agent architecture</a>
+      </div>
+
+      <div class="ai-right">
+        <div class="pipeline">
+          <div class="pipeline-title">The five-stage agent pipeline</div>
+          <div class="pipeline-stages">
+            <div class="pipe-stage"><div class="n">01</div><div class="s">Scope</div></div>
+            <div class="pipe-stage"><div class="n">02</div><div class="s">Context</div></div>
+            <div class="pipe-stage"><div class="n">03</div><div class="s">Schema</div></div>
+            <div class="pipe-stage"><div class="n">04</div><div class="s">Plan</div></div>
+            <div class="pipe-stage"><div class="n">05</div><div class="s">Evidence</div></div>
+          </div>
+          <div class="agent-output">
+<span style="color:rgba(255,255,255,.4)">// agent_response.json</span><br>
+<span class="key">shipment</span>: <span class="val">"CX-44219"</span><br>
+<span class="key">flag</span>: <span class="val">"4 days behind plant assembly schedule"</span><br>
+<span class="key">criticality</span>: <span class="val">"HIGH"</span><br>
+<span class="key">pattern</span>: <span class="val">"port congestion at JNPT during monsoon"</span><br>
+<span class="key">evidence_trail</span>: <span class="ev">[carrier_eta, port_dwell_history, plant_schedule_v3]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 06 — NOVA ARCHITECTURE -->
+<section class="section section-alt" id="nova">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">The architectural moat</span>
+      <h2 class="h2">The architecture that binds your products, your data, and your partners.</h2>
+      <p class="lede">Nova is what makes adaptation economically viable. Four binding pillars work alongside the product APIs and agents you have already seen. Together they let us map your exact process and run it in weeks, per customer, at scale.</p>
+    </div>
+
+    <div class="nova-grid">
+      <div class="nova-pillar">
+        <h4>Workflow Orchestrator</h4>
+        <p>Your end-to-end process in YAML. 20+ nodes for a typical PO-to-invoice match. Conditional routing, multi-level approvals. Edited per customer.</p>
+      </div>
+      <div class="nova-pillar">
+        <h4>Data Layer</h4>
+        <p>Customer-specific datasets — part catalog, plant schedules, supplier scores — flow into workflow conditions and agent context without engineering work.</p>
+      </div>
+      <div class="nova-pillar featured">
+        <div class="pill-label">Unique to us</div>
+        <h4>Service Tickets</h4>
+        <p>Off-platform partners — CHAs on WhatsApp, brokers on email, suppliers who never log in — pulled into the same system via email and lightweight portals.</p>
+      </div>
+      <div class="nova-pillar">
+        <h4>App Builder</h4>
+        <p>Custom UIs attached to specific workflow nodes. Per-customer interfaces, built from a reusable component library.</p>
+      </div>
+    </div>
+
+    <div class="center mt-3xl">
+      <a href="#" class="btn-ghost">Read the Nova architecture brief</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 07 — CROSS-BORDER STORY -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">Cross-border, concrete</span>
+      <h2 class="h2">What "global trade" actually means.</h2>
+    </div>
+
+    <div class="cb-grid">
+      <div class="cb-text">
+        <p>A global automotive OEM imports parts from 15 countries to feed Indian assembly. Engine control units from Germany, transmission parts from Japan, steel from Korea, electronics from Taiwan and China, rubber from Thailand.</p>
+        <p>A single vehicle depends on parts arriving on time from 8+ countries, through 3+ transport modes, cleared by customs houses on WhatsApp, insured by brokers on email.</p>
+        <div class="pull">This is what we built for. This is what a domestic-trained platform cannot run.</div>
+      </div>
+      <div class="cb-visual">
+        <div class="cb-phases">
+          <div class="cb-phase"><div class="ph-n">Phase 01</div><div class="ph-t">Order & Sourcing</div><div class="ph-d">POs across origins. Supplier coordination. Criticality flags.</div></div>
+          <div class="cb-phase"><div class="ph-n">Phase 02</div><div class="ph-t">Booking & Documents</div><div class="ph-d">Carrier selection. Commercial invoice. Packing list. BL.</div></div>
+          <div class="cb-phase"><div class="ph-n">Phase 03</div><div class="ph-t">Transit & Customs</div><div class="ph-d">Live tracking. Port handover. CHA coordination on WhatsApp.</div></div>
+          <div class="cb-phase"><div class="ph-n">Phase 04</div><div class="ph-t">Delivery & Settlement</div><div class="ph-d">Plant receipt. Three-way match. Invoice reconciliation.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 08 — PROOF -->
+<section class="section section-alt" id="proof">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">Earned proof</span>
+      <h2 class="h2">Already running global trade for the world's most complex shippers.</h2>
+    </div>
+
+    <div class="proof-numbers">
+      <div class="stat"><div class="num">50+</div><div class="lbl">Enterprise deployments</div></div>
+      <div class="stat"><div class="num">$5B</div><div class="lbl">In shipments</div></div>
+      <div class="stat"><div class="num">2M+</div><div class="lbl">Containers tracked</div></div>
+      <div class="stat"><div class="num">15+</div><div class="lbl">Countries per customer</div></div>
+    </div>
+
+    <blockquote class="quote-block">
+      <p class="quote-text">We tried three platforms before GoComet. They all gave us dashboards. GoComet gave us a workflow.</p>
+      <div class="quote-attribution">— Head of Global Logistics, Fortune 500 Manufacturer</div>
+    </blockquote>
+
+    <div class="logo-wall">
+      <img src="assets/logos/tata-motors.svg" alt="Tata Motors" />
+      <img src="assets/logos/honda.svg" alt="Honda" />
+      <img src="assets/logos/unilever.svg" alt="Unilever" />
+      <img src="assets/logos/sun-pharma.svg" alt="Sun Pharma" />
+      <img src="assets/logos/john-deere.svg" alt="John Deere" />
+      <img src="assets/logos/koch.svg" alt="Koch" />
+      <img src="assets/logos/schaeffler.svg" alt="Schaeffler" />
+      <img src="assets/logos/yokohama.svg" alt="Yokohama" />
+      <img src="assets/logos/general-mills.svg" alt="General Mills" />
+      <img src="assets/logos/danone.svg" alt="Danone" />
+      <img src="assets/logos/ab-inbev.svg" alt="AB InBev" />
+      <img src="assets/logos/sony.svg" alt="Sony" />
+      <img src="assets/logos/schneider-electric.svg" alt="Schneider Electric" />
+      <img src="assets/logos/kelloggs.svg" alt="Kellogg's" />
+      <img src="assets/logos/colgate.svg" alt="Colgate" />
+      <img src="assets/logos/general-mills.svg" alt="General Mills" />
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 09 — SPEED STORY -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">Speed, tangible</span>
+      <h2 class="h2">Live in six weeks. Not eighteen months.</h2>
+    </div>
+
+    <div class="speed-compare">
+      <div class="speed-row">
+        <div class="speed-label legacy">Legacy TMS</div>
+        <div>
+          <div class="speed-track"><div class="speed-bar legacy"><span>12–18 months</span></div></div>
+          <div class="speed-milestones">
+            <span>Kickoff</span><span>Month 6</span><span>Month 12</span><span>Month 14: first value</span><span>Month 18</span>
+          </div>
+        </div>
+      </div>
+      <div class="speed-row">
+        <div class="speed-label us">GoComet · Nova</div>
+        <div>
+          <div class="speed-track"><div class="speed-bar us">6 weeks</div></div>
+          <div class="speed-milestones">
+            <span>Wk 1: process mapped</span><span>Wk 3: first workflow live</span><span>Wk 6: full deployment</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="closing-line">Speed is not a marketing claim. It is a structural property of the architecture.</p>
+
+    <div class="center mt-3xl">
+      <a href="#cta" class="btn btn-primary">Get a six-week deployment plan</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 10 — WE ARE NOT / WE ARE -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-text">Force correct categorization</span>
+      <h2 class="h2">We are not. We are.</h2>
+      <p class="lede">Eliminate wrong-fit prospects in 30 seconds. Signal confidence to right-fit ones.</p>
+    </div>
+
+    <div class="notare-table">
+      <div class="notare-row">
+        <div class="notare-not"><span>Your AI-powered TMS</span></div>
+        <div class="notare-are"><p>The adaptive platform that sits above your TMS, unifying data from internal systems, external feeds, and your business rules.</p></div>
+      </div>
+      <div class="notare-row">
+        <div class="notare-not"><span>AI agents bolted on a Control Tower</span></div>
+        <div class="notare-are"><p>Your exact workflow, with all internal teams and off-platform partners in one connected system. Our agents are not chatbots; they are first-class analytical engines driven by your proprietary data and the deep context of your specific process.</p></div>
+      </div>
+      <div class="notare-row">
+        <div class="notare-not"><span>A toy no-code platform</span></div>
+        <div class="notare-are"><p>A platform where process adaptation IS the product. We map your as-is process and run it end to end, including the parts that happen off-platform.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 11 — FINAL CTA -->
+<section class="section" id="cta">
+  <div class="container">
+    <div class="final-cta">
+      <h2 class="h2">See your process. Live in six weeks.</h2>
+      <p class="lede">Book a 30-minute process-fit conversation. We will walk you through how Nova maps your exact trade workflow and what week 1 to week 6 looks like for your business.</p>
+      <div class="final-cta-ctas">
+        <a href="#" class="btn btn-primary">Book a process-fit conversation</a>
+        <a href="#" class="btn-ghost">Or read the Nova architecture brief</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <img src="assets/gocomet-logo.svg" alt="GoComet" style="height:24px" />
+        <p style="margin:var(--space-md) 0 0;font-size:13.5px;color:var(--text-muted);max-width:280px;line-height:1.55">AI-Native Adaptive Platform for Global Trade.</p>
+      </div>
+      <div>
+        <h6>Product</h6>
+        <ul>
+          <li><a href="#">GoOrder</a></li>
+          <li><a href="#">GoProcure</a></li>
+          <li><a href="#">GoTrack</a></li>
+          <li><a href="#">GoShipment</a></li>
+          <li><a href="#">GoInvoice</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Platform</h6>
+        <ul>
+          <li><a href="#">Nova architecture</a></li>
+          <li><a href="#">AI agents</a></li>
+          <li><a href="#">Service Tickets</a></li>
+          <li><a href="#">Integrations</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Company</h6>
+        <ul>
+          <li><a href="#">Customers</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 GoComet. Confidential.</span>
+      <span>Variant 1 · Main · Editorial</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

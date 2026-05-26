@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en" data-theme="agentic-ai">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GoComet — Built for the complexity of cross-border trade.</title>
+<style>
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Semibold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Extrabold.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+  @font-face{font-family:"Proxima Nova";src:url("assets/fonts/ProximaNova-Black.woff2") format("woff2");font-weight:900;font-style:normal;font-display:swap}
+
+  :root{
+    --primary:#0054FF; --primary-hover:#003E9C; --secondary:#3376FF; --accent:#A033FF;
+    --success:#179E60; --warning:#F68C00; --danger:#EB2E2E;
+    --bg:#FFFFFF; --surface:#F0F6FF; --border:#DADDE3;
+    --text:#0C1C3C; --text-muted:#4E5971;
+    --grid-line:rgba(0,84,255,.07); --grid-line-strong:rgba(0,84,255,.14);
+    --mono:"SF Mono","Monaco","Menlo","Cascadia Code",monospace;
+
+    --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:16px; --space-xl:24px;
+    --space-2xl:32px; --space-3xl:48px; --space-4xl:64px; --space-5xl:96px; --space-6xl:128px;
+    --r-sm:4px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-2xl:24px; --r-full:9999px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Proxima Nova",system-ui,sans-serif;
+    background:var(--bg); color:var(--text);
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+    /* page-level blueprint grid */
+    background-image:
+      linear-gradient(var(--grid-line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+    background-size:32px 32px;
+  }
+  a{color:inherit;text-decoration:none}
+
+  .h1{font-size:clamp(36px,5.5vw,80px);font-weight:800;line-height:1.0;letter-spacing:-0.025em}
+  .h2{font-size:clamp(28px,3.4vw,48px);font-weight:800;line-height:1.08;letter-spacing:-0.02em}
+  .h3{font-size:clamp(20px,2vw,26px);font-weight:700;line-height:1.2;letter-spacing:-0.01em}
+  .mono{font-family:var(--mono);font-feature-settings:"liga" 0}
+
+  .container{max-width:1320px;margin:0 auto;padding:0 var(--space-xl)}
+  @media (max-width:640px){.container{padding:0 var(--space-lg)}}
+  .section{padding:var(--space-5xl) 0;position:relative}
+  @media (max-width:640px){.section{padding:var(--space-3xl) 0}}
+
+  /* Tagged section title — like a code comment */
+  .sec-tag{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:11.5px;font-weight:600;
+    color:var(--primary);letter-spacing:0;margin-bottom:var(--space-md);
+  }
+  .sec-tag::before{content:"//";color:var(--text-muted);opacity:.6}
+
+  /* NAV — wireframe */
+  .nav{
+    position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    max-width:1320px;margin:0 auto;padding:14px var(--space-xl);
+    display:flex;align-items:center;gap:var(--space-2xl);
+  }
+  .nav-brand img{height:22px;width:auto;display:block}
+  .nav-brand-tag{
+    font-family:var(--mono);font-size:10.5px;color:var(--text-muted);
+    padding:2px 6px;border:1px solid var(--border);border-radius:var(--r-sm);
+    margin-left:10px;letter-spacing:.05em;
+  }
+  .nav-links{display:flex;gap:var(--space-lg);margin-left:var(--space-xl);flex:1;font-family:var(--mono);font-size:13px}
+  .nav-links a{color:var(--text);opacity:.7}
+  .nav-links a:hover{opacity:1;color:var(--primary)}
+  .nav-cta{display:flex;gap:var(--space-sm)}
+  @media (max-width:900px){.nav-links{display:none}}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:11px 20px;
+    border-radius:var(--r-sm);font-weight:600;font-size:13.5px;cursor:pointer;border:1px solid transparent;
+    transition:all .15s;font-family:inherit;
+  }
+  .btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
+  .btn-primary:hover{background:var(--primary);border-color:var(--primary)}
+  .btn-secondary{background:#fff;color:var(--text);border-color:var(--border)}
+  .btn-secondary:hover{border-color:var(--text)}
+  .btn-ghost{
+    background:transparent;color:var(--primary);border:0;padding:6px 0;
+    font-family:var(--mono);font-size:13px;font-weight:600;
+  }
+  .btn-ghost::before{content:"$ ";color:var(--text-muted);opacity:.6}
+  .btn-ghost::after{content:" →";display:inline-block;transition:transform .15s}
+  .btn-ghost:hover::after{transform:translateX(3px)}
+
+  /* ============ FOLD 01 — HERO ============ */
+  .hero{
+    padding:var(--space-5xl) 0 var(--space-4xl);
+    background:
+      url("assets/bg/agentic-theme-bg.png") center / cover no-repeat;
+    position:relative;overflow:hidden;
+    border-bottom:1px solid var(--border);
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(255,255,255,.7) 0%,rgba(255,255,255,.85) 100%);
+  }
+  .hero-inner{position:relative;display:grid;grid-template-columns:6fr 5fr;gap:var(--space-3xl);align-items:center}
+  @media (max-width:1024px){.hero-inner{grid-template-columns:1fr}}
+
+  .hero-meta{
+    display:flex;gap:var(--space-md);align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11.5px;color:var(--text-muted);
+    margin-bottom:var(--space-xl);
+  }
+  .hero-meta .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 10px;background:rgba(0,84,255,.08);color:var(--primary);
+    border:1px solid rgba(0,84,255,.2);border-radius:var(--r-sm);font-weight:600;
+  }
+  .hero-meta .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 4px rgba(0,84,255,.15)}
+  .hero-meta .sep{opacity:.4}
+
+  .hero h1{margin:0 0 var(--space-xl);max-width:760px}
+  .hero h1 .br{
+    display:block;position:relative;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(110deg,var(--primary) 0%,var(--accent) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{font-size:18px;line-height:1.6;color:var(--text-muted);margin:0 0 var(--space-xl);max-width:640px}
+  .hero-ctas{display:flex;gap:var(--space-md);flex-wrap:wrap;align-items:center}
+
+  /* Hero right — schematic agent flow */
+  .schematic{
+    background:rgba(255,255,255,.6);backdrop-filter:blur(10px);
+    border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:var(--space-xl);position:relative;
+  }
+  .schematic::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid-line-strong) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid-line-strong) 1px,transparent 1px);
+    background-size:24px 24px;
+    pointer-events:none;border-radius:var(--r-lg);opacity:.55;
+  }
+  .schematic > *{position:relative}
+  .schematic-head{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:10.5px;color:var(--text-muted);
+    letter-spacing:.06em;margin-bottom:var(--space-lg);
+  }
+  .schematic-head .live{display:inline-flex;align-items:center;gap:6px;color:var(--success);font-weight:600}
+  .schematic-head .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px rgba(23,158,96,.2)}
+
+  .schematic-flow{display:flex;flex-direction:column;gap:8px}
+  .sch-row{
+    display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;
+    padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);
+    font-size:13px;
+  }
+  .sch-row .ix{font-family:var(--mono);font-size:10px;color:var(--text-muted);text-align:right;font-weight:600}
+  .sch-row .nm{font-weight:600;letter-spacing:-0.005em}
+  .sch-row .nm small{display:block;font-size:11px;font-weight:500;color:var(--text-muted);margin-top:1px}
+  .sch-row .st{
+    font-family:var(--mono);font-size:10px;font-weight:700;
+    padding:3px 8px;border-radius:var(--r-sm);letter-spacing:.06em;
+  }
+  .sch-row .st.live{background:rgba(23,158,96,.1);color:var(--success);border:1px solid rgba(23,158,96,.25)}
+  .sch-row .st.flag{background:rgba(246,140,0,.1);color:var(--warning);border:1px solid rgba(246,140,0,.25)}
+  .sch-row .st.ok{background:rgba(0,84,255,.08);color:var(--primary);border:1px solid rgba(0,84,255,.2)}
+  .sch-row .st.off{background:rgba(160,51,255,.08);color:var(--accent);border:1px solid rgba(160,51,255,.2)}
+
+  .sch-arrow{display:flex;justify-content:center;color:var(--text-muted);font-family:var(--mono);font-size:14px;line-height:1}
+
+  /* ============ FOLD 02 — PROOF BAR ============ */
+  .proof-bar{
+    padding:var(--space-3xl) 0;background:var(--bg);
+    border-bottom:1px solid var(--border);
+  }
+  .stats-row{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    border:1px solid var(--border);border-radius:var(--r-md);
+    background:#fff;overflow:hidden;
+  }
+  .stat{padding:var(--space-xl);border-left:1px solid var(--border);position:relative}
+  .stat:first-child{border-left:0}
+  .stat .stat-label{font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:.08em;margin-bottom:var(--space-md);text-transform:uppercase;font-weight:600}
+  .stat .stat-label::before{content:"› ";color:var(--primary)}
+  .stat .num{font-size:clamp(28px,3vw,42px);font-weight:800;line-height:1;color:var(--text);letter-spacing:-0.02em}
+  .stat .lbl{font-size:12.5px;color:var(--text-muted);margin-top:6px;font-weight:500}
+  @media (max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr)}.stat{border-left:0;border-top:1px solid var(--border)}.stat:nth-child(-n+2){border-top:0}.stat:nth-child(even){border-left:1px solid var(--border)}}
+
+  .logo-section{margin-top:var(--space-2xl)}
+  .logo-section .caption{
+    font-family:var(--mono);font-size:11px;color:var(--text-muted);
+    letter-spacing:.06em;margin-bottom:var(--space-lg);display:block;text-align:center;
+  }
+  .logo-section .caption::before{content:"// ";color:var(--primary);opacity:.7}
+  .logo-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:var(--space-xl);align-items:center;opacity:.5;filter:grayscale(1)}
+  .logo-grid img{max-width:100%;max-height:30px;justify-self:center;object-fit:contain}
+  @media (max-width:960px){.logo-grid{grid-template-columns:repeat(4,1fr);gap:var(--space-lg)}}
+
+  /* ============ SHARED SECTION HEADER ============ */
+  .section-header{max-width:820px;margin:0 0 var(--space-3xl)}
+  .section-header.center{margin-left:auto;margin-right:auto;text-align:center}
+  .section-header h2{margin:0}
+  .lede{font-size:17px;color:var(--text-muted);margin-top:var(--space-lg);line-height:1.6}
+
+  /* ============ FOLD 03 — DIFFERENCE ============ */
+  .diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;background:#fff}
+  @media (max-width:960px){.diff-grid{grid-template-columns:1fr}}
+  .diff-card{
+    padding:var(--space-2xl);position:relative;
+    border-left:1px solid var(--border);
+    transition:background .2s;
+  }
+  .diff-card:first-child{border-left:0}
+  .diff-card:hover{background:var(--surface)}
+  .diff-card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--primary);
+    transform:scaleX(0);transform-origin:left;transition:transform .25s;
+  }
+  .diff-card:hover::before{transform:scaleX(1)}
+  .diff-num{
+    font-family:var(--mono);font-size:11px;font-weight:700;
+    color:var(--primary);letter-spacing:.14em;margin-bottom:var(--space-md);
+  }
+  .diff-num::before{content:"#"}
+  .diff-card h3{margin:0 0 var(--space-md);font-weight:800;font-size:22px;letter-spacing:-0.01em}
+  .diff-card p{margin:0;color:var(--text-muted);font-size:14.5px;line-height:1.6}
+  @media (max-width:960px){.diff-card{border-left:0;border-top:1px solid var(--border)}.diff-card:first-child{border-top:0}}
+
+  /* ============ FOLD 04 — PRODUCTS ============ */
+  .products-stack{
+    display:flex;flex-direction:column;gap:0;
+    border:1px solid var(--border);border-radius:var(--r-md);background:#fff;
+    overflow:hidden;margin-top:var(--space-2xl);
+  }
+  .product-row{
+    display:grid;grid-template-columns:60px 1fr 2fr auto;gap:var(--space-lg);
+    padding:var(--space-xl);border-top:1px solid var(--border);
+    align-items:center;transition:background .2s;
+  }
+  .product-row:first-child{border-top:0}
+  .product-row:hover{background:var(--surface)}
+  .product-row .p-ix{
+    font-family:var(--mono);font-size:12px;color:var(--text-muted);font-weight:700;letter-spacing:.08em;
+  }
+  .product-row .p-name{font-weight:800;font-size:18px;letter-spacing:-0.005em}
+  .product-row .p-cap{font-size:14px;color:var(--text-muted);line-height:1.55}
+  .product-row .p-plug{
+    font-family:var(--mono);font-size:10.5px;font-weight:600;
+    color:var(--primary);background:rgba(0,84,255,.08);
+    padding:5px 10px;border-radius:var(--r-sm);letter-spacing:.06em;
+    border:1px solid rgba(0,84,255,.15);
+  }
+  @media (max-width:880px){.product-row{grid-template-columns:60px 1fr;gap:var(--space-md)}.product-row .p-cap,.product-row .p-plug{grid-column:2}}
+
+  .closing-line{
+    font-style:italic;font-size:17px;color:var(--text-muted);text-align:center;
+    max-width:780px;margin:var(--space-3xl) auto 0;line-height:1.55;
+  }
+  .closing-line::before,.closing-line::after{content:"//";font-style:normal;color:var(--primary);opacity:.5;margin:0 8px;font-family:var(--mono);font-size:14px}
+
+  /* ============ FOLD 05 — AI & AGENTS (centerpiece) ============ */
+  .agent-fold{
+    background:
+      url("assets/bg/agentic-theme-bg.png") center / cover no-repeat;
+    position:relative;
+  }
+  .agent-fold::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(255,255,255,.85) 0%,rgba(240,246,255,.9) 100%);
+  }
+  .agent-fold > .container{position:relative}
+
+  .buzz-strip{
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+    margin:var(--space-xl) auto var(--space-3xl);max-width:920px;
+  }
+  .buzzword{
+    display:inline-block;padding:6px 14px;background:#fff;border:1px solid var(--border);
+    border-radius:var(--r-sm);font-family:var(--mono);font-size:12px;color:var(--text-muted);
+    text-decoration:line-through;text-decoration-color:rgba(235,46,46,.6);text-decoration-thickness:1.5px;
+  }
+
+  /* The big pipeline diagram */
+  .pipeline-diagram{
+    background:#0C1C3C;color:#fff;border-radius:var(--r-lg);
+    padding:var(--space-3xl) var(--space-2xl);position:relative;overflow:hidden;
+    border:1px solid #0C1C3C;
+  }
+  .pipeline-diagram::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+    background-size:24px 24px;
+  }
+  .pipeline-diagram::after{
+    content:"";position:absolute;top:-40%;right:-20%;width:600px;height:600px;
+    background:radial-gradient(circle,rgba(160,51,255,.35),transparent 60%);
+    pointer-events:none;
+  }
+  .pipeline-diagram > *{position:relative}
+  .pd-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:var(--space-2xl);font-family:var(--mono);font-size:11px;
+    color:rgba(255,255,255,.5);letter-spacing:.1em;
+  }
+  .pd-head .left::before{content:"// ";color:#7AB6FF}
+  .pd-head .right{color:#A6F1C7;display:inline-flex;align-items:center;gap:6px}
+  .pd-head .right::before{content:"";width:6px;height:6px;border-radius:50%;background:#A6F1C7;box-shadow:0 0 8px rgba(166,241,199,.7)}
+
+  .pd-stages{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:var(--space-2xl);
+    position:relative;
+  }
+  .pd-stage{
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+    padding:var(--space-lg);position:relative;
+    border-right:0;
+  }
+  .pd-stage:last-child{border-right:1px solid rgba(255,255,255,.12)}
+  .pd-stage::after{
+    content:"›";position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+    color:rgba(255,255,255,.4);font-size:20px;z-index:2;background:#0C1C3C;width:20px;text-align:center;
+    font-family:var(--mono);font-weight:700;
+  }
+  .pd-stage:last-child::after{display:none}
+  .pd-stage .stage-n{font-family:var(--mono);font-size:10.5px;color:#7AB6FF;font-weight:700;letter-spacing:.1em;margin-bottom:6px}
+  .pd-stage .stage-s{font-size:15px;font-weight:800;letter-spacing:-0.005em;margin-bottom:4px}
+  .pd-stage .stage-d{font-size:11.5px;color:rgba(255,255,255,.6);line-height:1.45;font-family:var(--mono)}
+  @media (max-width:880px){.pd-stages{grid-template-columns:1fr}.pd-stage{border-right:1px solid rgba(255,255,255,.12)}.pd-stage::after{display:none}}
+
+  .pd-example{
+    background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.1);
+    border-radius:var(--r-sm);padding:var(--space-lg);
+    font-family:var(--mono);font-size:12.5px;line-height:1.7;
+  }
+  .pd-example .lbl{color:#7AB6FF}
+  .pd-example .val{color:#fff}
+  .pd-example .ev{color:#A6F1C7}
+  .pd-example .cmt{color:rgba(255,255,255,.4)}
+  .pd-example .red{color:#FFB4B4}
+
+  .ai-fold-ctas{display:flex;justify-content:center;margin-top:var(--space-3xl)}
+
+  /* ============ FOLD 06 — NOVA ARCHITECTURE ============ */
+  .nova-blueprint{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+    padding:var(--space-2xl);margin-top:var(--space-2xl);position:relative;
+  }
+  .nova-blueprint::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+    background-size:32px 32px;border-radius:var(--r-md);opacity:.5;
+    pointer-events:none;
+  }
+  .nova-blueprint > *{position:relative}
+
+  .nova-blueprint-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:11px;color:var(--text-muted);
+    margin-bottom:var(--space-xl);letter-spacing:.06em;padding-bottom:var(--space-md);
+    border-bottom:1px dashed var(--border);
+  }
+  .nova-blueprint-head .ttl{color:var(--text);font-weight:700;letter-spacing:.08em}
+
+  .nova-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-lg)}
+  @media (max-width:1000px){.nova-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.nova-grid{grid-template-columns:1fr}}
+  .nova-pillar{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);
+    padding:var(--space-lg);position:relative;
+    transition:all .2s;
+  }
+  .nova-pillar:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:0 12px 24px -12px rgba(0,84,255,.2)}
+  .nova-pillar.featured{
+    background:linear-gradient(135deg,#0C1C3C,#1a2d52);color:#fff;
+    border-color:#0C1C3C;
+  }
+  .nova-pillar.featured p{color:rgba(255,255,255,.7)}
+  .nova-pillar .pn{
+    font-family:var(--mono);font-size:10px;font-weight:700;
+    color:var(--primary);letter-spacing:.12em;margin-bottom:var(--space-sm);
+    display:flex;justify-content:space-between;
+  }
+  .nova-pillar.featured .pn{color:#7AB6FF}
+  .nova-pillar h4{margin:0 0 var(--space-sm);font-size:17px;font-weight:800;letter-spacing:-0.005em}
+  .nova-pillar p{margin:0;font-size:13.5px;color:var(--text-muted);line-height:1.55}
+  .nova-pillar .unique-tag{
+    display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:700;
+    background:var(--accent);color:#fff;padding:2px 7px;
+    border-radius:var(--r-sm);letter-spacing:.12em;margin-bottom:var(--space-sm);
+  }
+
+  /* ============ FOLD 07 — CROSS-BORDER ============ */
+  .cb-grid{display:grid;grid-template-columns:5fr 7fr;gap:var(--space-3xl);align-items:center}
+  @media (max-width:960px){.cb-grid{grid-template-columns:1fr}}
+  .cb-text p{font-size:17px;line-height:1.65;margin:0 0 var(--space-lg)}
+  .cb-text .pull{
+    font-style:italic;color:var(--text);font-size:16px;font-weight:500;
+    border-left:3px solid var(--accent);padding-left:var(--space-lg);margin-top:var(--space-xl);
+  }
+
+  /* Cross-border diagram — origin → phases */
+  .cb-diagram{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+    padding:var(--space-2xl);position:relative;
+  }
+  .cb-origins{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--space-xl);padding-bottom:var(--space-lg);border-bottom:1px dashed var(--border)}
+  .origin-chip{
+    display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
+    padding:5px 10px;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r-sm);font-size:11.5px;font-weight:600;
+  }
+  .origin-chip .flag{font-size:13px;font-family:initial}
+  .origin-chip .arrow{color:var(--text-muted);opacity:.6}
+  .origin-chip .item{color:var(--text-muted)}
+  .cb-phases{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .cb-phase{
+    padding:var(--space-md);background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--r-sm);
+    position:relative;
+  }
+  .cb-phase::before{
+    content:"";position:absolute;top:50%;right:-4.5px;width:8px;height:8px;
+    background:#fff;border:1px solid var(--border);border-radius:50%;transform:translateY(-50%);
+  }
+  .cb-phase:last-child::before{display:none}
+  .cb-phase .pn{font-family:var(--mono);font-size:9.5px;color:var(--primary);font-weight:700;letter-spacing:.12em}
+  .cb-phase .pt{font-size:13.5px;font-weight:700;margin:5px 0 4px;letter-spacing:-0.005em;line-height:1.25}
+  .cb-phase .pd{font-size:11.5px;color:var(--text-muted);line-height:1.45}
+
+  /* ============ FOLD 08 — PROOF ============ */
+  .proof-band{
+    background:#0C1C3C;color:#fff;border-radius:var(--r-md);
+    padding:var(--space-2xl);margin:var(--space-2xl) 0;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    position:relative;overflow:hidden;
+  }
+  .proof-band::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+    background-size:24px 24px;
+  }
+  .proof-band > div{position:relative;padding:var(--space-md);border-left:1px solid rgba(255,255,255,.1)}
+  .proof-band > div:first-child{border-left:0}
+  .proof-band .num{font-size:clamp(28px,3vw,42px);font-weight:800;color:#fff;line-height:1;letter-spacing:-0.02em}
+  .proof-band .lbl{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.55);margin-top:8px;letter-spacing:.06em}
+  @media (max-width:768px){.proof-band{grid-template-columns:repeat(2,1fr)}.proof-band > div{border-left:0}}
+
+  .quote-block{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+    padding:var(--space-3xl);margin-top:var(--space-2xl);position:relative;
+  }
+  .quote-block::before{
+    content:"customer.feedback {";position:absolute;top:-10px;left:24px;
+    font-family:var(--mono);font-size:11px;color:var(--text-muted);
+    background:var(--bg);padding:0 8px;letter-spacing:.04em;
+  }
+  .quote-block::after{
+    content:"}";position:absolute;bottom:-10px;right:24px;
+    font-family:var(--mono);font-size:14px;color:var(--text-muted);
+    background:var(--bg);padding:0 8px;
+  }
+  .quote-text{
+    font-size:clamp(20px,2.2vw,30px);font-weight:700;line-height:1.35;letter-spacing:-0.01em;margin:0;
+  }
+  .quote-text .hl{color:var(--primary)}
+  .quote-attribution{margin-top:var(--space-lg);font-family:var(--mono);font-size:12px;color:var(--text-muted);letter-spacing:.06em}
+  .quote-attribution::before{content:"— ";color:var(--primary)}
+
+  .logo-wall{margin-top:var(--space-3xl);display:grid;grid-template-columns:repeat(8,1fr);gap:var(--space-md);align-items:center;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:var(--space-xl)}
+  .logo-wall img{max-width:100%;max-height:34px;justify-self:center;object-fit:contain;filter:grayscale(1);opacity:.7}
+  @media (max-width:960px){.logo-wall{grid-template-columns:repeat(4,1fr)}}
+
+  /* ============ FOLD 09 — SPEED ============ */
+  .speed-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+    padding:var(--space-2xl);margin-top:var(--space-2xl);position:relative;
+  }
+  .speed-card::before{
+    content:"timeline.compare";position:absolute;top:-10px;left:24px;
+    font-family:var(--mono);font-size:11px;color:var(--text-muted);
+    background:var(--bg);padding:0 8px;
+  }
+  .speed-row{
+    display:grid;grid-template-columns:180px 1fr;gap:var(--space-lg);
+    align-items:center;padding:var(--space-lg) 0;
+  }
+  .speed-row + .speed-row{border-top:1px dashed var(--border)}
+  .speed-label{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.04em}
+  .speed-label.legacy{color:var(--danger)}
+  .speed-label.us{color:var(--primary)}
+  .speed-label small{display:block;font-family:"Proxima Nova",sans-serif;font-size:11px;font-weight:500;color:var(--text-muted);letter-spacing:0;margin-top:4px;text-transform:none}
+  .speed-track{position:relative;height:40px;background:var(--surface);border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--border)}
+  .speed-bar{position:absolute;top:0;bottom:0;left:0;display:flex;align-items:center;padding:0 var(--space-md);font-weight:700;font-size:12px;font-family:var(--mono)}
+  .speed-bar.legacy{width:100%;background:repeating-linear-gradient(45deg,rgba(235,46,46,.1),rgba(235,46,46,.1) 8px,rgba(235,46,46,.22) 8px,rgba(235,46,46,.22) 16px);color:var(--danger);justify-content:flex-end}
+  .speed-bar.us{width:30%;background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;justify-content:center}
+  .speed-mile{display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:10.5px;color:var(--text-muted);font-weight:600}
+
+  /* ============ FOLD 10 — NOT/ARE ============ */
+  .notare-list{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+    overflow:hidden;margin-top:var(--space-2xl);
+  }
+  .notare-row{
+    display:grid;grid-template-columns:1fr 1.4fr;
+    border-top:1px solid var(--border);
+  }
+  .notare-row:first-child{border-top:0}
+  @media (max-width:768px){.notare-row{grid-template-columns:1fr}}
+  .notare-not{
+    padding:var(--space-xl);background:rgba(235,46,46,.04);
+    display:flex;align-items:center;gap:var(--space-md);
+    border-right:1px solid var(--border);
+  }
+  .notare-not .x{
+    font-family:var(--mono);font-size:14px;font-weight:700;color:var(--danger);
+    flex:0 0 auto;
+  }
+  .notare-not span.text{font-size:17px;font-weight:700;letter-spacing:-0.005em;text-decoration:line-through;text-decoration-color:rgba(235,46,46,.5);text-decoration-thickness:2px}
+  .notare-are{
+    padding:var(--space-xl);background:#fff;
+    display:flex;align-items:flex-start;gap:var(--space-md);
+  }
+  .notare-are .check{
+    font-family:var(--mono);font-size:14px;font-weight:700;color:var(--success);
+    flex:0 0 auto;margin-top:2px;
+  }
+  .notare-are p{margin:0;font-size:15px;line-height:1.6}
+  @media (max-width:768px){.notare-not{border-right:0;border-bottom:1px solid var(--border)}}
+
+  /* ============ FOLD 11 — CTA ============ */
+  .final-cta{
+    background:
+      url("assets/bg/agentic-theme-bg.png") center / cover no-repeat,
+      #0C1C3C;
+    color:#fff;border-radius:var(--r-md);
+    padding:var(--space-5xl) var(--space-2xl);position:relative;overflow:hidden;
+    text-align:center;border:1px solid #0C1C3C;
+  }
+  .final-cta::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(12,28,60,.92),rgba(0,84,255,.65),rgba(160,51,255,.4));
+  }
+  .final-cta::after{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+    background-size:32px 32px;
+  }
+  .final-cta > *{position:relative;z-index:1}
+  .final-cta .cta-tag{
+    display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);
+    font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.12em;
+    padding:5px 12px;border:1px solid rgba(255,255,255,.2);border-radius:var(--r-sm);
+    margin-bottom:var(--space-xl);
+  }
+  .final-cta .cta-tag::before{content:"";width:6px;height:6px;border-radius:50%;background:#A6F1C7;box-shadow:0 0 8px rgba(166,241,199,.7)}
+  .final-cta h2{color:#fff;margin:0 0 var(--space-lg)}
+  .final-cta-lede{color:rgba(255,255,255,.85);font-size:18px;max-width:680px;margin:0 auto var(--space-2xl);line-height:1.55}
+  .final-cta .btn-primary{background:#fff;color:var(--text);border-color:#fff}
+  .final-cta .btn-primary:hover{background:var(--surface);border-color:#fff}
+  .final-cta .btn-secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+  .final-cta .btn-secondary:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+  .final-cta-ctas{display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap}
+
+  /* ============ FOOTER ============ */
+  .footer{background:#fff;border-top:1px solid var(--border);padding:var(--space-4xl) 0 var(--space-2xl)}
+  .footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:var(--space-3xl)}
+  .footer h6{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--text-muted);margin:0 0 var(--space-lg);font-weight:700}
+  .footer h6::before{content:"// ";color:var(--primary);opacity:.7}
+  .footer ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+  .footer ul a{font-size:14px;color:var(--text);opacity:.7;font-family:var(--mono)}
+  .footer ul a::before{content:"› ";color:var(--text-muted);opacity:.5}
+  .footer ul a:hover{opacity:1;color:var(--primary)}
+  .footer-bottom{border-top:1px dashed var(--border);margin-top:var(--space-3xl);padding-top:var(--space-xl);display:flex;justify-content:space-between;font-family:var(--mono);font-size:11.5px;color:var(--text-muted)}
+  @media (max-width:960px){.footer-inner{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.footer-inner{grid-template-columns:1fr}}
+
+  .center{text-align:center}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#" style="display:flex;align-items:center"><img src="assets/gocomet-logo.svg" alt="GoComet" /><span class="nav-brand-tag">v.nova</span></a>
+    <div class="nav-links">
+      <a href="#products">/products</a>
+      <a href="#agents">/agents</a>
+      <a href="#nova">/nova</a>
+      <a href="#proof">/customers</a>
+      <a href="#">/docs</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-secondary">Sign in</a>
+      <a href="#cta" class="btn btn-primary">Book a demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- FOLD 01 — HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-meta">
+          <span class="badge"><span class="dot"></span> AI-NATIVE · ADAPTIVE PLATFORM</span>
+          <span class="sep">·</span>
+          <span>GLOBAL TRADE</span>
+          <span class="sep">·</span>
+          <span>v.2026.05</span>
+        </div>
+        <h1 class="h1">
+          <span class="br">Built for the complexity</span>
+          <span class="br">of <span class="grad">cross-border trade.</span></span>
+        </h1>
+        <p class="hero-sub">Your ops team is firefighting exceptions across disconnected tools, spreadsheets, and partners who never log in. We map your exact process, unite every partner into one connected workflow, and run it end to end. Adapted to you. Live in weeks.</p>
+        <div class="hero-ctas">
+          <a href="#cta" class="btn btn-primary">See a process-fit demo</a>
+          <a href="#nova" class="btn-ghost">How Nova works</a>
+        </div>
+      </div>
+
+      <!-- Schematic agent flow -->
+      <div class="schematic">
+        <div class="schematic-head">
+          <span class="mono">// SHIPMENT CX-44219</span>
+          <span class="live">LIVE</span>
+        </div>
+        <div class="schematic-flow">
+          <div class="sch-row">
+            <div class="ix mono">01</div>
+            <div class="nm">PO Origin — Frankfurt<small>ECU module · Tier-1 supplier</small></div>
+            <div class="st live mono">LIVE</div>
+          </div>
+          <div class="sch-arrow mono">↓</div>
+          <div class="sch-row">
+            <div class="ix mono">02</div>
+            <div class="nm">Sea freight — Hamburg → Nhava Sheva<small>16-leg multi-modal route</small></div>
+            <div class="st ok mono">OK</div>
+          </div>
+          <div class="sch-arrow mono">↓</div>
+          <div class="sch-row">
+            <div class="ix mono">03</div>
+            <div class="nm">CHA — WhatsApp<small>Off-platform partner · Service Ticket</small></div>
+            <div class="st off mono">OFF-PLATFORM</div>
+          </div>
+          <div class="sch-arrow mono">↓</div>
+          <div class="sch-row">
+            <div class="ix mono">04</div>
+            <div class="nm">Port handover — JNPT<small>Monsoon congestion pattern</small></div>
+            <div class="st flag mono">FLAG</div>
+          </div>
+          <div class="sch-arrow mono">↓</div>
+          <div class="sch-row">
+            <div class="ix mono">05</div>
+            <div class="nm">Plant assembly — Chakan<small>Criticality: HIGH</small></div>
+            <div class="st ok mono">SCHEDULED</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FOLD 02 — PROOF BAR -->
+<section class="proof-bar">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-label">deployments</div>
+        <div class="num">50+</div>
+        <div class="lbl">Enterprise customers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">shipments</div>
+        <div class="num">$5B</div>
+        <div class="lbl">In freight value</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">containers</div>
+        <div class="num">2M+</div>
+        <div class="lbl">Tracked end-to-end</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">countries</div>
+        <div class="num">15+</div>
+        <div class="lbl">Per customer · avg</div>
+      </div>
+    </div>
+    <div class="logo-section">
+      <span class="caption">trusted_by: global_enterprise_shippers[]</span>
+      <div class="logo-grid">
+        <img src="assets/logos/unilever.svg" alt="Unilever" />
+        <img src="assets/logos/honda.svg" alt="Honda" />
+        <img src="assets/logos/general-mills.svg" alt="General Mills" />
+        <img src="assets/logos/sun-pharma.svg" alt="Sun Pharma" />
+        <img src="assets/logos/john-deere.svg" alt="John Deere" />
+        <img src="assets/logos/tata-motors.svg" alt="Tata Motors" />
+        <img src="assets/logos/koch.svg" alt="Koch" />
+        <img src="assets/logos/schaeffler.svg" alt="Schaeffler" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 03 — DIFFERENCE -->
+<section class="section">
+  <div class="container">
+    <div class="section-header center">
+      <div class="sec-tag">three_wedges.mdx</div>
+      <h2 class="h2">Why this is different.</h2>
+      <p class="lede">Carry these three ideas down the page.</p>
+    </div>
+    <div class="diff-grid">
+      <article class="diff-card">
+        <div class="diff-num">01_DATA</div>
+        <h3>Cross-border, by data.</h3>
+        <p>$5B in shipments, 2M+ containers tracked, port and freight forwarder relationships across international routes. Built on data domestic platforms do not have.</p>
+      </article>
+      <article class="diff-card">
+        <div class="diff-num">02_ADAPTATION</div>
+        <h3>Adapted, as a product.</h3>
+        <p>Your as-is process is the product. Approvals, exceptions, document standards, off-platform partners. Mapped, adapted, and live. No template fitting.</p>
+      </article>
+      <article class="diff-card">
+        <div class="diff-num">03_SPEED</div>
+        <h3>Weeks, by architecture.</h3>
+        <p>Nova's five-pillar architecture makes per-customer adaptation economically viable. Live in six weeks across 50+ enterprise deployments. By design, not by hustle.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 04 — PRODUCTS -->
+<section class="section" id="products" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-header">
+      <div class="sec-tag">products.list</div>
+      <h2 class="h2">The workflow is the product. These are the engines that power it.</h2>
+      <p class="lede">Five deep domain products, built over a decade of running global trade. Your workflow decides which products plug in, where, and how. No off-the-shelf module. No forced standardization.</p>
+    </div>
+
+    <div class="products-stack">
+      <div class="product-row">
+        <div class="p-ix">PRODUCT_01</div>
+        <div class="p-name">GoOrder</div>
+        <div class="p-cap">PO ingestion and order management with full context: criticality, plant destination, supplier history.</div>
+        <div class="p-plug">workflow.start</div>
+      </div>
+      <div class="product-row">
+        <div class="p-ix">PRODUCT_02</div>
+        <div class="p-name">GoProcure</div>
+        <div class="p-cap">Carrier selection and rate intelligence. Live rate comparison across freight forwarders, contract enforcement, spot negotiation.</div>
+        <div class="p-plug">carrier.approval</div>
+      </div>
+      <div class="product-row">
+        <div class="p-ix">PRODUCT_03</div>
+        <div class="p-name">GoTrack</div>
+        <div class="p-cap">Multi-modal, multi-leg shipment tracking. Real-time ETA, exception detection, port and carrier data.</div>
+        <div class="p-plug">booking.to.receipt</div>
+      </div>
+      <div class="product-row">
+        <div class="p-ix">PRODUCT_04</div>
+        <div class="p-name">GoShipment</div>
+        <div class="p-cap">End-to-end shipment execution. Booking, document collection, dispatch coordination, last-mile orchestration.</div>
+        <div class="p-plug">execution.backbone</div>
+      </div>
+      <div class="product-row">
+        <div class="p-ix">PRODUCT_05</div>
+        <div class="p-name">GoInvoice</div>
+        <div class="p-cap">Invoice reconciliation and variance management. Three-way match across PO, shipment, and contract.</div>
+        <div class="p-plug">finance.close</div>
+      </div>
+    </div>
+
+    <p class="closing-line">Each product is deep enough to stand on its own. Bound together by Nova and adapted to your workflow, they run your trade operation end to end.</p>
+
+    <div class="center" style="margin-top:var(--space-3xl)">
+      <a href="#" class="btn btn-secondary">Explore the product portfolio</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 05 — AI & AGENTS -->
+<section class="section agent-fold" id="agents">
+  <div class="container">
+    <div class="section-header center">
+      <div class="sec-tag">agents.architecture</div>
+      <h2 class="h2">Most platforms talk about AI. Few can show you the system.</h2>
+      <p class="lede">These are common claims across this category. The difference is in what makes them true.</p>
+    </div>
+
+    <div class="buzz-strip">
+      <span class="buzzword">AI agents that act autonomously</span>
+      <span class="buzzword">No-code orchestration</span>
+      <span class="buzzword">System of record → system of action</span>
+      <span class="buzzword">Weeks not quarters</span>
+    </div>
+
+    <div class="pipeline-diagram">
+      <div class="pd-head">
+        <span class="left">agent.pipeline · five-stage</span>
+        <span class="right">RUNNING</span>
+      </div>
+      <div class="pd-stages">
+        <div class="pd-stage">
+          <div class="stage-n">STAGE_01</div>
+          <div class="stage-s">Scope</div>
+          <div class="stage-d">What is being asked? What system boundary?</div>
+        </div>
+        <div class="pd-stage">
+          <div class="stage-n">STAGE_02</div>
+          <div class="stage-s">Context</div>
+          <div class="stage-d">Pull your data — POs, schedules, ports, partners.</div>
+        </div>
+        <div class="pd-stage">
+          <div class="stage-n">STAGE_03</div>
+          <div class="stage-s">Schema</div>
+          <div class="stage-d">Structure the response. Typed. Verifiable.</div>
+        </div>
+        <div class="pd-stage">
+          <div class="stage-n">STAGE_04</div>
+          <div class="stage-s">Plan</div>
+          <div class="stage-d">Sequence the steps. Branching. Approvals.</div>
+        </div>
+        <div class="pd-stage">
+          <div class="stage-n">STAGE_05</div>
+          <div class="stage-s">Evidence</div>
+          <div class="stage-d">Cite the proof. Carrier ETA. Port history. Plant.</div>
+        </div>
+      </div>
+
+      <div class="pd-example">
+<span class="cmt">// agent.response — concrete output, not vague "may be delayed"</span><br>
+<span class="lbl">shipment</span>: <span class="val">"CX-44219"</span>,<br>
+<span class="lbl">status</span>: <span class="val">"4 days behind plant assembly schedule"</span>,<br>
+<span class="lbl">criticality</span>: <span class="red">"HIGH"</span>,<br>
+<span class="lbl">pattern</span>: <span class="val">"port congestion at JNPT during monsoon"</span>,<br>
+<span class="lbl">evidence_trail</span>: <span class="ev">[carrier_eta, port_dwell_history_2024_25, plant_schedule_v3, criticality_score]</span>
+      </div>
+    </div>
+
+    <p style="font-size:16px;line-height:1.65;color:var(--text-muted);text-align:center;max-width:780px;margin:var(--space-3xl) auto 0">GoComet's agents are not chatbots wedged into a sidebar. They are first-class analytical engines, built directly into your workflow — grounded in your proprietary data and the deep context of your exact process.</p>
+
+    <div class="ai-fold-ctas">
+      <a href="#" class="btn btn-secondary">Read the Nova agent architecture</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 06 — NOVA -->
+<section class="section" id="nova">
+  <div class="container">
+    <div class="section-header">
+      <div class="sec-tag">nova.architecture</div>
+      <h2 class="h2">The architecture that binds your products, data, and partners.</h2>
+      <p class="lede">Nova is what makes adaptation economically viable. Four binding pillars work alongside the product APIs and agents you have already seen. Together they let us map your exact process and run it in weeks, per customer, at scale.</p>
+    </div>
+
+    <div class="nova-blueprint">
+      <div class="nova-blueprint-head">
+        <span class="ttl">// nova.blueprint — four binding pillars</span>
+        <span>SYSTEM</span>
+      </div>
+      <div class="nova-grid">
+        <div class="nova-pillar">
+          <div class="pn"><span>PILLAR_01</span><span>YAML</span></div>
+          <h4>Workflow Orchestrator</h4>
+          <p>Your end-to-end process in YAML. 20+ nodes for a typical PO-to-invoice match. Conditional routing, multi-level approvals. Edited per customer.</p>
+        </div>
+        <div class="nova-pillar">
+          <div class="pn"><span>PILLAR_02</span><span>DATA</span></div>
+          <h4>Data Layer</h4>
+          <p>Customer-specific datasets — part catalog, plant schedules, supplier scores — flow into workflow conditions and agent context without engineering work.</p>
+        </div>
+        <div class="nova-pillar featured">
+          <div class="unique-tag">UNIQUE TO US</div>
+          <div class="pn"><span>PILLAR_03</span><span>SVC</span></div>
+          <h4>Service Tickets</h4>
+          <p>Off-platform partners — CHAs on WhatsApp, brokers on email, suppliers who never log in — pulled into the same system via email and lightweight portals.</p>
+        </div>
+        <div class="nova-pillar">
+          <div class="pn"><span>PILLAR_04</span><span>UI</span></div>
+          <h4>App Builder</h4>
+          <p>Custom UIs attached to specific workflow nodes. Per-customer interfaces, built from a reusable component library.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="center" style="margin-top:var(--space-3xl)">
+      <a href="#" class="btn btn-secondary">Read the Nova architecture brief</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 07 — CROSS-BORDER -->
+<section class="section" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-header">
+      <div class="sec-tag">cross_border.concrete</div>
+      <h2 class="h2">What "global trade" actually means.</h2>
+    </div>
+
+    <div class="cb-grid">
+      <div class="cb-text">
+        <p>A global automotive OEM imports parts from 15 countries to feed Indian assembly. Engine control units from Germany, transmission parts from Japan, steel from Korea, electronics from Taiwan and China, rubber from Thailand.</p>
+        <p>A single vehicle depends on parts arriving on time from 8+ countries, through 3+ transport modes, cleared by customs houses on WhatsApp, insured by brokers on email.</p>
+        <div class="pull">This is what we built for. This is what a domestic-trained platform cannot run.</div>
+      </div>
+      <div class="cb-diagram">
+        <div class="cb-origins">
+          <span class="origin-chip"><span class="flag">🇩🇪</span><span class="arrow">→</span><span class="item">ECUs</span></span>
+          <span class="origin-chip"><span class="flag">🇯🇵</span><span class="arrow">→</span><span class="item">transmission</span></span>
+          <span class="origin-chip"><span class="flag">🇰🇷</span><span class="arrow">→</span><span class="item">steel</span></span>
+          <span class="origin-chip"><span class="flag">🇹🇼</span><span class="arrow">→</span><span class="item">electronics</span></span>
+          <span class="origin-chip"><span class="flag">🇨🇳</span><span class="arrow">→</span><span class="item">electronics</span></span>
+          <span class="origin-chip"><span class="flag">🇹🇭</span><span class="arrow">→</span><span class="item">rubber</span></span>
+          <span class="origin-chip">+ 9 more origins</span>
+        </div>
+        <div class="cb-phases">
+          <div class="cb-phase">
+            <div class="pn">PHASE_01</div>
+            <div class="pt">Order & Sourcing</div>
+            <div class="pd">POs across origins. Criticality flags.</div>
+          </div>
+          <div class="cb-phase">
+            <div class="pn">PHASE_02</div>
+            <div class="pt">Booking & Docs</div>
+            <div class="pd">Carrier. Invoice. Packing list. BL.</div>
+          </div>
+          <div class="cb-phase">
+            <div class="pn">PHASE_03</div>
+            <div class="pt">Transit & Customs</div>
+            <div class="pd">Live tracking. CHA on WhatsApp.</div>
+          </div>
+          <div class="cb-phase">
+            <div class="pn">PHASE_04</div>
+            <div class="pt">Delivery & Settlement</div>
+            <div class="pd">Plant receipt. Three-way match.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 08 — PROOF -->
+<section class="section" id="proof">
+  <div class="container">
+    <div class="section-header">
+      <div class="sec-tag">customers.proof</div>
+      <h2 class="h2">Already running global trade for the world's most complex shippers.</h2>
+    </div>
+
+    <div class="proof-band">
+      <div><div class="num">50+</div><div class="lbl">enterprise.deployments</div></div>
+      <div><div class="num">$5B</div><div class="lbl">in.shipments</div></div>
+      <div><div class="num">2M+</div><div class="lbl">containers.tracked</div></div>
+      <div><div class="num">15+</div><div class="lbl">countries.per.customer</div></div>
+    </div>
+
+    <blockquote class="quote-block">
+      <p class="quote-text">We tried three platforms before GoComet. They all gave us dashboards. <span class="hl">GoComet gave us a workflow.</span></p>
+      <div class="quote-attribution">Head of Global Logistics, Fortune 500 Manufacturer</div>
+    </blockquote>
+
+    <div class="logo-wall">
+      <img src="assets/logos/tata-motors.svg" alt="Tata Motors" />
+      <img src="assets/logos/honda.svg" alt="Honda" />
+      <img src="assets/logos/unilever.svg" alt="Unilever" />
+      <img src="assets/logos/sun-pharma.svg" alt="Sun Pharma" />
+      <img src="assets/logos/john-deere.svg" alt="John Deere" />
+      <img src="assets/logos/koch.svg" alt="Koch" />
+      <img src="assets/logos/schaeffler.svg" alt="Schaeffler" />
+      <img src="assets/logos/yokohama.svg" alt="Yokohama" />
+      <img src="assets/logos/general-mills.svg" alt="General Mills" />
+      <img src="assets/logos/danone.svg" alt="Danone" />
+      <img src="assets/logos/ab-inbev.svg" alt="AB InBev" />
+      <img src="assets/logos/sony.svg" alt="Sony" />
+      <img src="assets/logos/schneider-electric.svg" alt="Schneider Electric" />
+      <img src="assets/logos/kelloggs.svg" alt="Kellogg's" />
+      <img src="assets/logos/colgate.svg" alt="Colgate" />
+      <img src="assets/logos/general-mills.svg" alt="General Mills" />
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 09 — SPEED -->
+<section class="section" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-header">
+      <div class="sec-tag">deployment.timeline</div>
+      <h2 class="h2">Live in six weeks. Not eighteen months.</h2>
+    </div>
+
+    <div class="speed-card">
+      <div class="speed-row">
+        <div class="speed-label legacy">LEGACY_TMS<small>Customer waits</small></div>
+        <div>
+          <div class="speed-track"><div class="speed-bar legacy">12–18 months · zero value until month 14</div></div>
+          <div class="speed-mile"><span>KICKOFF</span><span>M_06</span><span>M_12</span><span>M_14 · FIRST_VALUE</span><span>M_18</span></div>
+        </div>
+      </div>
+      <div class="speed-row">
+        <div class="speed-label us">GOCOMET_NOVA<small>Structural property</small></div>
+        <div>
+          <div class="speed-track"><div class="speed-bar us">6 WEEKS</div></div>
+          <div class="speed-mile"><span>W_01 · PROCESS_MAPPED</span><span>W_03 · FIRST_WORKFLOW_LIVE</span><span>W_06 · FULL_DEPLOYMENT</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="closing-line">Speed is not a marketing claim. It is a structural property of the architecture.</p>
+
+    <div class="center" style="margin-top:var(--space-3xl)">
+      <a href="#cta" class="btn btn-primary">Get a six-week deployment plan</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 10 — NOT/ARE -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="sec-tag">categorization.force</div>
+      <h2 class="h2">We are not. We are.</h2>
+      <p class="lede">Eliminate wrong-fit prospects in 30 seconds. Signal confidence to right-fit ones.</p>
+    </div>
+
+    <div class="notare-list">
+      <div class="notare-row">
+        <div class="notare-not"><span class="x mono">[NOT]</span><span class="text">Your AI-powered TMS</span></div>
+        <div class="notare-are"><span class="check mono">[ARE]</span><p>The adaptive platform that sits above your TMS, unifying data from internal systems, external feeds, and your business rules.</p></div>
+      </div>
+      <div class="notare-row">
+        <div class="notare-not"><span class="x mono">[NOT]</span><span class="text">AI agents bolted on a Control Tower</span></div>
+        <div class="notare-are"><span class="check mono">[ARE]</span><p>Your exact workflow, with all internal teams and off-platform partners in one connected system. Our agents are not chatbots; they are first-class analytical engines driven by your proprietary data and the deep context of your specific process.</p></div>
+      </div>
+      <div class="notare-row">
+        <div class="notare-not"><span class="x mono">[NOT]</span><span class="text">A toy no-code platform</span></div>
+        <div class="notare-are"><span class="check mono">[ARE]</span><p>A platform where process adaptation IS the product. We map your as-is process and run it end to end, including the parts that happen off-platform.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLD 11 — CTA -->
+<section class="section" id="cta">
+  <div class="container">
+    <div class="final-cta">
+      <div class="cta-tag">deployment.ready · 6_weeks_to_live</div>
+      <h2 class="h2">See your process. Live in six weeks.</h2>
+      <p class="final-cta-lede">Book a 30-minute process-fit conversation. We will walk you through how Nova maps your exact trade workflow and what week 1 to week 6 looks like for your business.</p>
+      <div class="final-cta-ctas">
+        <a href="#" class="btn btn-primary">Book a process-fit conversation</a>
+        <a href="#" class="btn btn-secondary">Or read the Nova architecture brief</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <img src="assets/gocomet-logo.svg" alt="GoComet" style="height:22px" />
+        <p style="margin:var(--space-md) 0 0;font-family:var(--mono);font-size:12px;color:var(--text-muted);max-width:280px;line-height:1.55">// AI-Native Adaptive Platform<br>// for Global Trade.</p>
+      </div>
+      <div>
+        <h6>product</h6>
+        <ul><li><a href="#">GoOrder</a></li><li><a href="#">GoProcure</a></li><li><a href="#">GoTrack</a></li><li><a href="#">GoShipment</a></li><li><a href="#">GoInvoice</a></li></ul>
+      </div>
+      <div>
+        <h6>platform</h6>
+        <ul><li><a href="#">Nova architecture</a></li><li><a href="#">AI agents</a></li><li><a href="#">Service Tickets</a></li><li><a href="#">Integrations</a></li></ul>
+      </div>
+      <div>
+        <h6>company</h6>
+        <ul><li><a href="#">Customers</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>// © 2026 GoComet. Confidential.</span>
+      <span>// Variant 4 · Agentic AI · Technical</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
