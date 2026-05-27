@@ -128,34 +128,63 @@
     .cursor-dot, .cursor-ring { display: none; }
   }
 
+  /* ----- Globe lane pills — labels that follow the traveling pulses ----- */
+  .globe-pill-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;                                  /* above globe canvas, below nav */
+    overflow: hidden;
+  }
+  .globe-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(10, 10, 10, 0.78);
+    border: 1px solid rgba(0, 84, 255, 0.55);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #ffffff;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;                                  /* JS sets opacity per frame */
+    /* Transform is updated per-frame; transition smooths small jitters */
+    transition: opacity 220ms ease;
+    will-change: transform, opacity;
+    box-shadow: 0 0 12px rgba(0, 84, 255, 0.18);
+    white-space: nowrap;
+  }
+  .globe-pill-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+    flex-shrink: 0;
+  }
+  .globe-pill-text { font-size: 9.5px; }
+  /* Hide pills on small screens — too cluttered next to the smaller globe */
+  @media (max-width: 767px) {
+    .globe-pill-layer { display: none; }
+  }
+
   /* ----- Hero background: #0a0a0a + grid + intersection dots ----- */
   .hero-bg {
     background-color: #0a0a0a;
     position: relative;
   }
-  /* ----- Customer logos (muted monochrome on dark background) -----
-     Filter strategy: brightness(0) crushes all color to black, then invert(1)
-     flips to pure white, then opacity dims to muted gray. This handles any
-     source SVG palette uniformly without per-logo CSS. */
-  .customer-logo {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
-    filter: brightness(0) invert(1);
-    opacity: 0.55;
-    transition: opacity 250ms ease;
-  }
-  .customer-logo:hover {
-    opacity: 0.9;
-  }
 
-  /* ----- Section 2 logo grid (full-bleed, hero-style lines + dots) -----
-     The grid spans the full viewport width edge-to-edge. The line look matches
-     the hero: 1px white lines at low opacity, with a small white dot at every
-     intersection (rendered as a radial-gradient layer on the grid container). */
+  /* ----- Logo carousel grid: 8 cols × 5 rows, animated logo rotation per cell ----- */
   .logo-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     gap: 1px;
     background: rgba(255, 255, 255, 0.07);     /* line color, shows through 1px gaps */
     border-top:    1px solid rgba(255, 255, 255, 0.07);
@@ -163,8 +192,7 @@
     overflow: hidden;
     position: relative;
   }
-  /* Intersection dots — small white dots at the corners of each cell.
-     Two layers stacked: one for the top edge, one for the bottom edge. */
+  /* Intersection dots at the top + bottom edges of the grid */
   .logo-grid::after {
     content: '';
     position: absolute;
@@ -177,39 +205,70 @@
     background-size: 12.5% 3px, 12.5% 3px;
     background-position: 0 0, 0 100%;
   }
-  @media (min-width: 1024px) {
-    .logo-grid { grid-template-columns: repeat(8, 1fr); }
-    .logo-grid::after {
-      background-size: 12.5% 3px, 12.5% 3px;
-    }
-  }
+  /* Tablet: 4 columns × 10 rows */
   @media (max-width: 1023px) and (min-width: 640px) {
+    .logo-grid { grid-template-columns: repeat(4, 1fr); }
     .logo-grid::after {
       background-size: 25% 3px, 25% 3px;
     }
   }
+  /* Mobile: 2 columns */
   @media (max-width: 639px) {
     .logo-grid { grid-template-columns: repeat(2, 1fr); }
     .logo-grid::after {
       background-size: 50% 3px, 50% 3px;
     }
   }
+
   .logo-cell {
+    position: relative;
     background: #0a0a0a;
     display: flex;
     align-items: center;
     justify-content: center;
     aspect-ratio: 1 / 1;
     padding: 24px;
+    overflow: hidden;                          /* clip the sliding logos */
   }
   @media (min-width: 1024px) {
     .logo-cell { aspect-ratio: auto; height: 120px; }
   }
-  /* Logos sit at ~75% of cell — 25% smaller than the full-cell sizing */
+
+  /* Each logo image in a cell stack is absolutely positioned so they all
+     share the same space. JS toggles .is-active / .is-exiting to drive the
+     slide animation. */
   .logo-cell .customer-logo {
-    max-height: 60%;
-    max-width: 75%;
+    position: absolute;
+    top: 50%; left: 50%;
+    max-height: 55%;
+    max-width: 70%;
+    width: auto;
+    height: auto;
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 22px));   /* hidden below */
+    transition:
+      opacity 0ms 600ms,                              /* delay opacity change until after exit slide */
+      transform 0ms 600ms;
+    pointer-events: none;
+    filter: brightness(0) invert(1);                  /* normalize all logos to white */
+    will-change: transform, opacity;
   }
+  .logo-cell .customer-logo.is-active {
+    opacity: 0.55;
+    transform: translate(-50%, -50%);
+    transition:
+      opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Exiting state: slide up and out, opacity to 0 */
+  .logo-cell .customer-logo.is-exiting {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 22px));
+    transition:
+      opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .logo-cell:hover .customer-logo.is-active { opacity: 0.9; }
 
   /* Grid + dot pattern lives on a pseudo-element so we can independently mask
      it (fade out on the right) without affecting the solid base color. */
@@ -1033,41 +1092,9 @@
   </div>
 
   <!-- Logo grid: full-bleed, edge-to-edge of the viewport -->
-  <div class="logo-grid">
-
-    <div class="logo-cell">
-      <img src="logos/unilever.svg" alt="Unilever" class="customer-logo" />
-    </div>
-
-    <div class="logo-cell">
-      <img src="logos/general-mills.svg" alt="General Mills" class="customer-logo" />
-    </div>
-
-    <div class="logo-cell">
-      <img src="logos/kelloggs.svg" alt="Kellogg's" class="customer-logo" />
-    </div>
-
-    <div class="logo-cell">
-      <img src="logos/colgate.svg" alt="Colgate" class="customer-logo" />
-    </div>
-
-    <div class="logo-cell">
-      <img src="logos/schneider-electric.svg" alt="Schneider Electric" class="customer-logo" />
-    </div>
-
-    <div class="logo-cell">
-      <img src="logos/honda.svg" alt="Honda" class="customer-logo" />
-    </div>
-
-    <div class="logo-cell">
-      <img src="logos/sony.svg" alt="Sony" class="customer-logo" />
-    </div>
-
-    <div class="logo-cell">
-      <img src="logos/ab-inbev.svg" alt="AB InBev" class="customer-logo" />
-    </div>
-
-  </div>
+  <!-- Logo carousel grid: 8 columns × 5 rows of cells, each cell cycles
+       through customer logos with a slide-up animation. Populated by JS. -->
+  <div class="logo-grid" id="logo-grid"></div>
 
   <!-- Add bottom padding inside the section so the grid has room before next section -->
   <div class="h-10 md:h-12 lg:h-16"></div>
@@ -1764,6 +1791,142 @@
     });
   })();
 
+  // ---------- Section 2: logo carousel (single row of 8 cells, 5 pages, all-at-once flip) ----------
+  // 40 unique logos divided into 5 "pages" of 8. The grid shows one row of 8 cells.
+  // Every ~5 seconds the page advances: all 8 cells slide their current logos up
+  // and out while the next page slides in from below — synchronized.
+  (function () {
+    const grid = document.getElementById('logo-grid');
+    if (!grid) return;
+
+    // 40 logos, 5 pages × 8 columns
+    const LOGOS = [
+      // Page 1
+      { file: 'unilever.svg',           alt: 'Unilever' },
+      { file: 'general-mills.svg',      alt: 'General Mills' },
+      { file: 'kelloggs.svg',           alt: "Kellogg's" },
+      { file: 'colgate.svg',            alt: 'Colgate' },
+      { file: 'schneider-electric.svg', alt: 'Schneider Electric' },
+      { file: 'honda.svg',              alt: 'Honda' },
+      { file: 'sony.svg',               alt: 'Sony' },
+      { file: 'ab-inbev.svg',           alt: 'AB InBev' },
+      // Page 2
+      { file: 'danone.svg',             alt: 'Danone' },
+      { file: 'itc.svg',                alt: 'ITC' },
+      { file: 'godrej.svg',             alt: 'Godrej' },
+      { file: 'pidilite.svg',           alt: 'Pidilite' },
+      { file: 'himalaya.svg',           alt: 'Himalaya' },
+      { file: 'apollo-tyres.svg',       alt: 'Apollo Tyres' },
+      { file: 'ceat.svg',               alt: 'CEAT' },
+      { file: 'yokohama.svg',           alt: 'Yokohama' },
+      // Page 3
+      { file: 'tvs.svg',                alt: 'TVS' },
+      { file: 'tata-motors.svg',        alt: 'Tata Motors' },
+      { file: 'john-deere.svg',         alt: 'John Deere' },
+      { file: 'eaton.svg',              alt: 'Eaton' },
+      { file: 'schaeffler.svg',         alt: 'Schaeffler' },
+      { file: 'osram.svg',              alt: 'OSRAM' },
+      { file: 'nidec.svg',              alt: 'Nidec' },
+      { file: 'kodak.svg',              alt: 'Kodak' },
+      // Page 4
+      { file: 'ppg.svg',                alt: 'PPG' },
+      { file: 'ajinomoto.svg',          alt: 'Ajinomoto' },
+      { file: 'jollibee.svg',           alt: 'Jollibee' },
+      { file: 'champion.svg',           alt: 'Champion' },
+      { file: 'lycra.svg',              alt: 'Lycra' },
+      { file: 'galaxy.svg',             alt: 'Galaxy' },
+      { file: 'motul.svg',              alt: 'Motul' },
+      { file: 'ihs-markit.svg',         alt: 'IHS Markit' },
+      // Page 5
+      { file: 'sp-global.svg',          alt: 'S&P Global' },
+      { file: 'pwc.svg',                alt: 'PwC' },
+      { file: 'oracle-petroleum.svg',   alt: 'Oracle Petroleum' },
+      { file: 'qatar-airways.svg',      alt: 'Qatar Airways' },
+      { file: 'wipro.svg',              alt: 'Wipro' },
+      { file: 'biocon.svg',             alt: 'Biocon' },
+      { file: 'glenmark.svg',           alt: 'Glenmark' },
+      { file: 'dr-reddy.svg',           alt: "Dr. Reddy's" },
+    ];
+
+    const COLS_PER_ROW = 8;
+    const NUM_PAGES = LOGOS.length / COLS_PER_ROW;     // 5
+
+    // Build the 8 cells. Each cell contains every logo (40 imgs) absolutely
+    // positioned in the same spot — only one is .is-active per cell at a time.
+    // This keeps the rotation animation flicker-free (no dynamic src changes).
+    const cells = [];
+    for (let c = 0; c < COLS_PER_ROW; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'logo-cell';
+      cell.dataset.colIndex = c;
+
+      // Cell c shows LOGOS[page * 8 + c] for current page
+      LOGOS.forEach((logo, li) => {
+        // Only the logos that belong to column c are placed in this cell
+        if (li % COLS_PER_ROW !== c) return;
+        const img = document.createElement('img');
+        img.src = 'logos/' + logo.file;
+        img.alt = logo.alt;
+        img.className = 'customer-logo';
+        img.loading = 'lazy';
+        // First page's logo starts active
+        if (li === c) img.classList.add('is-active');
+        cell.appendChild(img);
+      });
+
+      cells.push(cell);
+      grid.appendChild(cell);
+    }
+
+    let currentPage = 0;
+
+    // Advance ALL cells to the next page simultaneously
+    function advancePage() {
+      const nextPage = (currentPage + 1) % NUM_PAGES;
+
+      for (let c = 0; c < COLS_PER_ROW; c++) {
+        const cell = cells[c];
+        // The 5 imgs in this cell are page 0, 1, 2, 3, 4 for this column (in DOM order)
+        const imgs = cell.querySelectorAll('.customer-logo');
+        const currentImg = imgs[currentPage];
+        const nextImg = imgs[nextPage];
+
+        // Outgoing slides up + fades out
+        currentImg.classList.remove('is-active');
+        currentImg.classList.add('is-exiting');
+
+        // Incoming slides up from below into center
+        nextImg.classList.add('is-active');
+
+        // Clean up the exiting class after the animation completes so the
+        // image goes back to its hidden default state
+        const outgoing = currentImg;
+        setTimeout(() => outgoing.classList.remove('is-exiting'), 750);
+      }
+
+      currentPage = nextPage;
+    }
+
+    // IntersectionObserver — pause cycling when the grid is off-screen
+    let gridVisible = false;
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        gridVisible = entries[0].isIntersecting;
+      }, { threshold: 0 });
+      io.observe(grid);
+    } else {
+      gridVisible = true;
+    }
+
+    // Cycle every 5 seconds — well within the "5-7s" range you specified.
+    // Driven by setInterval; guarded by visibility check.
+    const CYCLE_INTERVAL = 5000;
+    setInterval(() => {
+      if (!gridVisible || document.hidden) return;
+      advancePage();
+    }, CYCLE_INTERVAL);
+  })();
+
   // ---------- Section 5: scramble-text reveal for agent panel values ----------
   // Any element with class .scramble runs a brief glitch-text animation when:
   //   - it first scrolls into view (one-shot per element)
@@ -2083,6 +2246,22 @@ function buildArc(startVec, endVec) {
 
 const laneObjects = [];
 
+// Lane labels — 4 themes cycle across the 14 lanes so they repeat naturally
+const LANE_LABELS = [
+  'Multi-partner',
+  'Multi-modal complexity',
+  'Multi-process',
+  'Multi-channel',
+];
+
+// Container that holds all the HTML pill labels (one per pulse).
+// Positioned absolutely over the globe canvas; pills move via transform.
+const pillLayer = document.createElement('div');
+pillLayer.className = 'globe-pill-layer';
+pillLayer.setAttribute('aria-hidden', 'true');
+// Append to the canvas's parent so pills sit on top of the globe
+canvas.parentElement.appendChild(pillLayer);
+
 lanes.forEach(([aKey, bKey]) => {
   const a = cities[aKey];
   const b = cities[bKey];
@@ -2119,10 +2298,20 @@ lanes.forEach(([aKey, bKey]) => {
   const pulse = new THREE.Mesh(pulseGeom, pulseMat);
   arcsGroup.add(pulse);
 
+  // Build the HTML pill that will follow this pulse
+  const labelText = LANE_LABELS[laneObjects.length % LANE_LABELS.length];
+  const pill = document.createElement('div');
+  pill.className = 'globe-pill';
+  pill.innerHTML =
+    '<span class="globe-pill-dot"></span>' +
+    '<span class="globe-pill-text">' + labelText + '</span>';
+  pillLayer.appendChild(pill);
+
   laneObjects.push({
     curve,
     line,
     pulse,
+    pill,
     phase: Math.random(),
     speed: 0.10 + Math.random() * 0.10,
   });
@@ -2190,6 +2379,19 @@ document.addEventListener('visibilitychange', () => {
   if (tabVisible) clock.getDelta();
 });
 
+// Reusable scratch vectors for projection (avoid per-frame allocations)
+const _worldPos = new THREE.Vector3();
+const _screenPos = new THREE.Vector3();
+const _toPoint = new THREE.Vector3();
+const _fromCenter = new THREE.Vector3();
+
+// A point is facing the camera if (point - camera) · (point - globeCenter) < 0
+function isFacingCamera(worldPos) {
+  _fromCenter.copy(worldPos).sub(globeGroup.position);
+  _toPoint.copy(worldPos).sub(camera.position);
+  return _toPoint.dot(_fromCenter) < 0;
+}
+
 function animate() {
   requestAnimationFrame(animate);
 
@@ -2207,7 +2409,11 @@ function animate() {
   autoYaw += dt * 0.08;
   globeGroup.rotation.y = autoYaw;
 
-  // Advance white pulses along each lane
+  const rendererSize = renderer.domElement;
+  const halfW = rendererSize.clientWidth / 2;
+  const halfH = rendererSize.clientHeight / 2;
+
+  // Advance white pulses along each lane + position their pills
   for (let i = 0; i < laneObjects.length; i++) {
     const lo = laneObjects[i];
     lo.phase += dt * lo.speed;
@@ -2215,7 +2421,36 @@ function animate() {
     lo.curve.getPoint(lo.phase, lo.pulse.position); // write into existing Vector3 (no alloc)
     // Fade near endpoints so it reads as the pulse dissolving into the city
     const edge = Math.min(lo.phase, 1 - lo.phase);
-    lo.pulse.material.opacity = Math.min(1, edge * 6);
+    const pulseOpacity = Math.min(1, edge * 6);
+    lo.pulse.material.opacity = pulseOpacity;
+
+    // Position the HTML pill at the projected screen location of the pulse
+    if (lo.pill) {
+      // Get the pulse's world position (accounts for globeGroup rotation + offset)
+      lo.pulse.getWorldPosition(_worldPos);
+      // Project to clip space [-1, 1]
+      _screenPos.copy(_worldPos).project(camera);
+      // Convert to canvas pixels (origin top-left of canvas)
+      const x = (_screenPos.x * halfW) + halfW;
+      const y = -(_screenPos.y * halfH) + halfH;
+
+      // Decide visibility: pulse must be in front of globe AND clearly visible (not edge-fading)
+      const facing = isFacingCamera(_worldPos);
+      const onScreen = _screenPos.z < 1 && _screenPos.x > -1.1 && _screenPos.x < 1.1 && _screenPos.y > -1.1 && _screenPos.y < 1.1;
+      const visible = facing && onScreen && pulseOpacity > 0.55;
+
+      if (visible) {
+        // Pill sits just above the pulse with a small vertical offset.
+        // translate(-50%, -100%) anchors the pill bottom-center over the pulse.
+        lo.pill.style.transform =
+          `translate3d(${x}px, ${y - 10}px, 0) translate(-50%, -100%)`;
+        // Fade pill opacity with the pulse so it dissolves naturally as the
+        // pulse approaches an endpoint
+        lo.pill.style.opacity = Math.min(1, (pulseOpacity - 0.5) * 2.5);
+      } else {
+        lo.pill.style.opacity = '0';
+      }
+    }
   }
 
   renderer.render(scene, camera);
